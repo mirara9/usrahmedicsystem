@@ -18,11 +18,11 @@ export function Brand({ href = "/" }: { href?: string }) {
   );
 }
 
-export function PublicTopbar({ active = "home" }: { active?: "home" | "booking" }) {
+export function PublicTopbar({ active = "home", compact = false }: { active?: "home" | "booking"; compact?: boolean }) {
   return (
-    <header className="topbar">
+    <header className={`topbar${compact ? " compact-booking" : ""}`}>
       <Brand />
-      <LocalizedPublicNav active={active} />
+      <LocalizedPublicNav active={active} compact={compact} />
     </header>
   );
 }

@@ -13,6 +13,7 @@ interface LanguageContextValue {
 
 interface PublicNavProps {
   active: "home" | "booking";
+  compact?: boolean;
 }
 
 const languageStorageKey = "usrahmedic-language";
@@ -91,30 +92,38 @@ export function LanguageSelector() {
   );
 }
 
-export function LocalizedPublicNav({ active }: PublicNavProps) {
+export function LocalizedPublicNav({ active, compact = false }: PublicNavProps) {
   const { language } = useLanguage();
   const copy = sharedCopy[language];
 
-  const menuLinks = [
-    { href: "/", label: copy.home, isActive: active === "home" },
-    { href: "/#promosi", label: copy.promotions },
-    { href: "/#tentang", label: copy.about },
-    { href: "/#perkhidmatan", label: copy.services },
-    { href: "/#rangkaian", label: copy.branches },
-    { href: "/#hubungi", label: copy.contact }
-  ];
+  const menuLinks = compact
+    ? [
+        { href: "/", label: copy.home, isActive: active === "home" },
+        { href: "/#perkhidmatan", label: copy.services },
+        { href: "/#hubungi", label: copy.contact }
+      ]
+    : [
+        { href: "/", label: copy.home, isActive: active === "home" },
+        { href: "/#promosi", label: copy.promotions },
+        { href: "/#tentang", label: copy.about },
+        { href: "/#perkhidmatan", label: copy.services },
+        { href: "/#rangkaian", label: copy.branches },
+        { href: "/#hubungi", label: copy.contact }
+      ];
 
   return (
-    <nav className="surface-nav public-nav-modern" aria-label={copy.navAria}>
+    <nav className={`surface-nav public-nav-modern${compact ? " compact-nav" : ""}`} aria-label={copy.navAria}>
       {menuLinks.map((item) => (
         <Link className={item.isActive ? "active" : ""} href={item.href} key={item.href}>
           {item.label}
         </Link>
       ))}
-      <Link className={active === "booking" ? "active" : ""} href="/patient">
-        <CalendarCheck size={16} aria-hidden="true" />
-        {copy.bookAppointment}
-      </Link>
+      {!compact ? (
+        <Link className={active === "booking" ? "active" : ""} href="/patient">
+          <CalendarCheck size={16} aria-hidden="true" />
+          {copy.bookAppointment}
+        </Link>
+      ) : null}
       <LanguageSelector />
       <a className="nav-contact" href="tel:+601135664998">
         <Phone size={16} aria-hidden="true" />
@@ -253,9 +262,9 @@ const publicHomeCopy = {
 const patientPageCopy = {
   en: {
     badge: "Usrah Medic appointment request",
-    heroTitle: "Request an appointment and let the clinic confirm the best slot for you.",
+    heroTitle: "Request an appointment. The clinic will confirm the best slot for you.",
     heroText:
-      "Choose your branch, service, and preferred time. The clinic will review your request and contact you by phone or WhatsApp to confirm the final appointment.",
+      "Choose your branch, service, and preferred time. The clinic will contact you by phone or WhatsApp to confirm the final appointment.",
     open24: "24-hour branch",
     requestOnly: "Clinic confirmation first",
     branchCount: "branches",
@@ -291,9 +300,9 @@ const patientPageCopy = {
   },
   ms: {
     badge: "Permintaan janji temu Usrah Medic",
-    heroTitle: "Hantar permintaan janji temu dan biar klinik sahkan slot terbaik untuk anda.",
+    heroTitle: "Mohon janji temu. Klinik akan sahkan slot terbaik untuk anda.",
     heroText:
-      "Pilih cawangan, servis, dan masa pilihan. Klinik akan semak permintaan anda dan hubungi melalui telefon atau WhatsApp untuk pengesahan akhir.",
+      "Pilih cawangan, servis, dan masa pilihan. Klinik akan hubungi melalui telefon atau WhatsApp untuk pengesahan akhir.",
     open24: "Cawangan 24 jam",
     requestOnly: "Sahkan dengan klinik dahulu",
     branchCount: "cawangan",

@@ -499,13 +499,15 @@ export function PatientBookingAction() {
         <p>{copy.cardText}</p>
       </div>
 
-      <div className={`action-status status-${state.tone}`} aria-live="polite">
-        <CheckCircle2 size={18} aria-hidden="true" />
-        <div>
-          <strong>{state.title}</strong>
-          <p>{state.detail}</p>
+      {state.tone !== "idle" ? (
+        <div className={`action-status status-${state.tone}`} aria-live="polite">
+          <CheckCircle2 size={18} aria-hidden="true" />
+          <div>
+            <strong>{state.title}</strong>
+            <p>{state.detail}</p>
+          </div>
         </div>
-      </div>
+      ) : null}
 
       <div className="booking-stepper" aria-label="Booking steps">
         {copy.progress.map((label, index) => (

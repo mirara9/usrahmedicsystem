@@ -734,17 +734,18 @@ select {
 
 .patient-page {
   --bg: #ffffff;
-  --surface-2: #fff3f8;
+  --surface-2: #fff7fb;
   --primary: var(--brand-pink);
-  --primary-strong: var(--brand-pink-dark);
-  --line: #eadde3;
-  background: #fff;
+  --primary-strong: #3d2a35;
+  --line: #eee5eb;
+  background: #fbfbfd;
   color: #20282c;
-  font-family: "Open Sans", Arial, sans-serif;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
 }
 
 .patient-page .topbar {
-  background: rgba(255, 255, 255, 0.96);
+  background: rgba(251, 251, 253, 0.88);
+  border-bottom-color: rgba(15, 23, 42, 0.08);
 }
 
 .patient-page .brand-mark,
@@ -761,19 +762,19 @@ select {
 .patient-hero {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 22px;
+  gap: 12px;
   align-items: start;
   min-height: auto;
-  padding: clamp(28px, 5vw, 56px) clamp(18px, 5vw, 72px) 14px;
-  background:
-    linear-gradient(180deg, rgba(0, 139, 131, 0.05), rgba(236, 19, 127, 0.04)),
-    #fff;
+  max-width: 1040px;
+  margin: 0 auto;
+  padding: clamp(14px, 2.2vw, 24px) clamp(18px, 4vw, 28px) 4px;
+  background: transparent;
 }
 
 .patient-hero-copy {
   position: static;
   display: grid;
-  gap: 16px;
+  gap: 12px;
 }
 
 .patient-hero-simple {
@@ -785,7 +786,7 @@ select {
 }
 
 .patient-hero-copy-simple {
-  max-width: 720px;
+  max-width: 760px;
 }
 
 .patient-logo {
@@ -794,56 +795,58 @@ select {
 }
 
 .brand-pill {
-  border-color: rgba(236, 19, 127, 0.22);
-  background: rgba(236, 19, 127, 0.08);
+  border-color: rgba(236, 19, 127, 0.12);
+  background: rgba(236, 19, 127, 0.05);
   color: var(--brand-pink-dark);
-  font-weight: 800;
+  font-weight: 700;
 }
 
 .patient-hero h1 {
-  max-width: 720px;
+  max-width: 760px;
   margin: 0;
-  color: #1f272b;
-  font-size: clamp(1.85rem, 3.1vw, 2.7rem);
-  line-height: 1.12;
+  color: #1b2430;
+  font-size: clamp(1.35rem, 1.7vw, 1.85rem);
+  line-height: 1.14;
+  letter-spacing: -0.02em;
 }
 
 .patient-hero p {
-  max-width: 760px;
+  max-width: 700px;
   margin: 0;
-  color: #617078;
-  font-size: 1rem;
-  line-height: 1.68;
+  color: #667085;
+  font-size: 0.95rem;
+  line-height: 1.58;
 }
 
 .patient-trust-row {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
-  margin-top: 6px;
+  gap: 8px;
+  margin-top: 2px;
 }
 
 .patient-trust-row span {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  min-height: 38px;
-  border: 1px solid rgba(0, 139, 131, 0.22);
+  min-height: 32px;
+  border: 1px solid rgba(15, 23, 42, 0.08);
   border-radius: 999px;
-  padding: 0 13px;
-  color: #0d6f69;
-  background: #f0fbfa;
-  font-weight: 800;
+  padding: 0 11px;
+  color: #475467;
+  background: rgba(255, 255, 255, 0.88);
+  font-size: 0.9rem;
+  font-weight: 600;
 }
 
 .booking-card {
   display: grid;
-  gap: 14px;
-  border: 1px solid #eadde3;
-  border-radius: 8px;
-  padding: clamp(16px, 3vw, 26px);
+  gap: 16px;
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  border-radius: 20px;
+  padding: clamp(18px, 3vw, 28px);
   background: #fff;
-  box-shadow: 0 24px 70px rgba(74, 45, 60, 0.12);
+  box-shadow: 0 18px 50px rgba(15, 23, 42, 0.08);
 }
 
 .profile-strip {
@@ -887,15 +890,19 @@ select {
 }
 
 .patient-page .field input,
-.patient-page .field select {
-  min-height: 46px;
-  border-color: #ded8dc;
+.patient-page .field select,
+.patient-page .field textarea {
+  min-height: 48px;
+  border-color: rgba(15, 23, 42, 0.12);
+  border-radius: 14px;
+  background: #fff;
 }
 
 .patient-page .field input:focus,
-.patient-page .field select:focus {
-  border-color: var(--brand-pink);
-  box-shadow: 0 0 0 3px rgba(236, 19, 127, 0.12);
+.patient-page .field select:focus,
+.patient-page .field textarea:focus {
+  border-color: rgba(83, 58, 253, 0.46);
+  box-shadow: 0 0 0 4px rgba(83, 58, 253, 0.08);
   outline: 0;
 }
 
@@ -987,11 +994,56 @@ select {
 }
 
 .patient-request-shell {
-  padding: 0 clamp(18px, 5vw, 72px) 24px;
+  max-width: 1040px;
+  margin: 0 auto;
+  padding: 0 clamp(18px, 4vw, 28px) 24px;
 }
 
 .patient-request-shell-compact {
-  padding-top: 8px;
+  padding-top: 4px;
+}
+
+.topbar.compact-booking {
+  gap: 18px;
+  padding-block: 10px;
+}
+
+.compact-booking .brand-logo {
+  min-width: 138px;
+  width: 138px;
+}
+
+.compact-nav {
+  align-items: center;
+  gap: 12px;
+}
+
+.compact-nav a {
+  min-height: auto;
+  border: 0;
+  padding: 0;
+  background: transparent;
+  color: #475467;
+  font-weight: 600;
+}
+
+.compact-nav a.active {
+  color: #101828;
+  background: transparent;
+  border: 0;
+}
+
+.compact-nav .language-picker,
+.compact-nav .nav-contact {
+  min-height: 36px;
+  border-radius: 999px;
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  padding: 0 12px;
+  background: rgba(255, 255, 255, 0.92);
+}
+
+.compact-nav .language-picker {
+  min-width: 168px;
 }
 
 .patient-request-grid {
@@ -1190,13 +1242,16 @@ html[lang="zh-Hans"] .patient-hero h1 {
 
 .booking-card-header h2 {
   margin: 0;
-  color: #20282c;
-  font-size: clamp(1.45rem, 2.5vw, 2rem);
+  color: #101828;
+  font-size: clamp(1.3rem, 2vw, 1.75rem);
+  line-height: 1.15;
+  letter-spacing: -0.02em;
 }
 
 .booking-card-header p {
   margin: 0;
-  color: #607179;
+  max-width: 620px;
+  color: #667085;
   line-height: 1.55;
 }
 
@@ -1207,38 +1262,42 @@ html[lang="zh-Hans"] .patient-hero h1 {
 }
 
 .booking-stepper button {
-  min-height: 58px;
-  border: 1px solid #eadde3;
+  min-height: 56px;
+  border: 1px solid rgba(15, 23, 42, 0.08);
   border-radius: 16px;
   display: grid;
   justify-items: start;
-  gap: 2px;
+  gap: 3px;
   padding: 12px 14px;
-  color: #65747b;
+  color: #667085;
   background: #fff;
   text-align: left;
   cursor: pointer;
 }
 
 .booking-stepper button strong {
-  color: #20282c;
-  font-size: 0.86rem;
+  color: #98a2b3;
+  font-size: 0.8rem;
 }
 
 .booking-stepper button span {
-  font-size: 0.95rem;
-  font-weight: 700;
+  font-size: 0.94rem;
+  font-weight: 600;
 }
 
 .booking-stepper button.active {
-  border-color: rgba(236, 19, 127, 0.26);
-  background: #fff1f8;
-  color: var(--brand-pink-dark);
+  border-color: rgba(83, 58, 253, 0.18);
+  background: rgba(83, 58, 253, 0.05);
+  color: #2e2b8c;
+}
+
+.booking-stepper button.active strong {
+  color: #533afd;
 }
 
 .booking-stepper button.complete {
-  border-color: rgba(49, 198, 197, 0.26);
-  background: #f2fcfb;
+  border-color: rgba(15, 23, 42, 0.08);
+  background: #f8fafc;
 }
 
 .profile-strip {
@@ -1326,10 +1385,10 @@ html[lang="zh-Hans"] .patient-hero h1 {
 
 .booking-section {
   display: grid;
-  gap: 16px;
-  border: 1px solid #efe2e8;
-  border-radius: 8px;
-  padding: 20px;
+  gap: 18px;
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  border-radius: 18px;
+  padding: 22px;
   background: #fff;
 }
 
@@ -1441,10 +1500,10 @@ html[lang="zh-Hans"] .patient-hero h1 {
   position: static;
   display: grid;
   gap: 16px;
-  border: 1px solid rgba(236, 19, 127, 0.18);
-  border-radius: 8px;
-  padding: 18px;
-  background: #fff6fa;
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  border-radius: 18px;
+  padding: 20px;
+  background: #fcfcfd;
 }
 
 .summary-total {
@@ -1452,18 +1511,18 @@ html[lang="zh-Hans"] .patient-hero h1 {
   flex-direction: column;
   align-items: flex-start;
   justify-content: flex-start;
-  gap: 8px;
+  gap: 6px;
 }
 
 .summary-total span {
-  color: #64737a;
-  font-weight: 800;
+  color: #667085;
+  font-weight: 700;
 }
 
 .summary-total strong {
-  color: var(--brand-pink);
+  color: #101828;
   font-size: 1rem;
-  line-height: 1.5;
+  line-height: 1.45;
   white-space: normal;
 }
 
@@ -1633,24 +1692,22 @@ html[lang="zh-Hans"] .patient-hero h1 {
 
 .patient-page {
   --bg: #ffffff;
-  --surface-2: #f0fcfb;
-  --line: #d8f1ef;
-  background: #fff;
+  --surface-2: #fcfcfd;
+  --line: rgba(15, 23, 42, 0.08);
+  background: #fbfbfd;
 }
 
 .patient-hero {
-  background:
-    linear-gradient(115deg, rgba(49, 198, 197, 0.12) 0%, #fff 42%, rgba(236, 19, 127, 0.08) 100%),
-    #fff;
+  background: transparent;
 }
 
 .patient-page .topbar {
-  border-bottom-color: rgba(49, 198, 197, 0.26);
+  border-bottom-color: rgba(15, 23, 42, 0.08);
 }
 
 .patient-page .surface-nav a,
 .patient-page .language-picker {
-  border-color: rgba(49, 198, 197, 0.24);
+  border-color: rgba(15, 23, 42, 0.08);
   background: #fff;
 }
 
@@ -1660,37 +1717,37 @@ html[lang="zh-Hans"] .patient-hero h1 {
 }
 
 .brand-pill {
-  border-color: rgba(49, 198, 197, 0.28);
-  background: #f0fcfb;
-  color: #08756f;
+  border-color: rgba(236, 19, 127, 0.12);
+  background: rgba(236, 19, 127, 0.05);
+  color: var(--brand-pink-dark);
 }
 
 .booking-card,
 .booking-section,
 .profile-strip,
 .booking-summary {
-  border-color: rgba(49, 198, 197, 0.2);
+  border-color: rgba(15, 23, 42, 0.08);
   background: #fff;
 }
 
 .booking-card {
-  box-shadow: 0 24px 70px rgba(0, 139, 131, 0.1);
+  box-shadow: 0 18px 50px rgba(15, 23, 42, 0.08);
 }
 
 .booking-card-header .brand-pill,
 .profile-strip .brand-pill {
-  border-color: rgba(236, 19, 127, 0.22);
-  background: #fff5fa;
+  border-color: rgba(236, 19, 127, 0.12);
+  background: rgba(236, 19, 127, 0.05);
   color: var(--brand-pink-dark);
 }
 
 .action-status.status-idle,
 .profile-strip {
-  background: #f2fcfb;
+  background: #fcfcfd;
 }
 
 .booking-summary {
-  background: linear-gradient(180deg, #fff 0%, #fff7fb 100%);
+  background: #fcfcfd;
 }
 
 .deposit-option.active,
