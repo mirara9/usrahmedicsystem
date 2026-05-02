@@ -1,12 +1,10 @@
 "use client";
 
-import { Clock3, HeartPulse, MapPin, Phone, ShieldCheck, Sparkles, Stethoscope } from "lucide-react";
+import { Clock3, MapPin, Phone, ShieldCheck, Sparkles } from "lucide-react";
 import { branches } from "@usrahmedic/domain";
 import { PatientBookingAction } from "../../components/actions";
 import { PublicTopbar } from "../../components/chrome";
 import { usePatientPageCopy } from "../../components/language";
-
-const serviceIcons = [HeartPulse, Stethoscope, ShieldCheck] as const;
 
 export default function PatientPage() {
   const copy = usePatientPageCopy();
@@ -15,8 +13,8 @@ export default function PatientPage() {
     <div className="app-shell patient-page">
       <PublicTopbar active="booking" />
       <main>
-        <section className="patient-hero">
-          <div className="patient-hero-copy">
+        <section className="patient-hero patient-hero-simple patient-hero-compact">
+          <div className="patient-hero-copy patient-hero-copy-simple">
             <span className="pill brand-pill">
               <Sparkles size={15} aria-hidden="true" />
               {copy.badge}
@@ -28,48 +26,12 @@ export default function PatientPage() {
               <span><ShieldCheck size={17} aria-hidden="true" /> {copy.requestOnly}</span>
               <span><MapPin size={17} aria-hidden="true" /> {branches.length} {copy.branchCount}</span>
             </div>
-            <div className="patient-hero-photo" aria-label={copy.heroPhotoLabel} />
-          </div>
-          <PatientBookingAction />
-        </section>
-
-        <section className="patient-section patient-process" aria-label={copy.processAria}>
-          <div className="section-heading">
-            <div>
-              <p className="pill brand-pill">{copy.processBadge}</p>
-              <h2>{copy.processTitle}</h2>
-            </div>
-            <p>{copy.processText}</p>
-          </div>
-          <div className="booking-steps">
-            {copy.bookingSteps.map((step, index) => (
-              <article key={step}>
-                <span>{index + 1}</span>
-                <strong>{step}</strong>
-              </article>
-            ))}
           </div>
         </section>
 
-        <section className="patient-section" aria-label="Popular services">
-          <div className="section-heading">
-            <div>
-              <p className="pill brand-pill">{copy.servicesBadge}</p>
-              <h2>{copy.servicesTitle}</h2>
-            </div>
-            <p>{copy.servicesText}</p>
-          </div>
-          <div className="grid grid-3">
-            {copy.services.map((service, index) => {
-              const Icon = serviceIcons[index] ?? HeartPulse;
-              return (
-                <article className="service-card" key={service.title}>
-                  <Icon size={24} aria-hidden="true" />
-                  <h3>{service.title}</h3>
-                  <p>{service.detail}</p>
-                </article>
-              );
-            })}
+        <section className="patient-request-shell patient-request-shell-compact">
+          <div className="patient-request-grid">
+            <PatientBookingAction />
           </div>
         </section>
 

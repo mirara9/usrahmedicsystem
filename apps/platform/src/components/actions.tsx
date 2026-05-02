@@ -634,9 +634,9 @@ export function PatientBookingAction() {
                   <p>{copy.depositText}</p>
                 </div>
               </div>
-              <div className="deposit-options" aria-label={copy.paymentAria}>
+              <div className="next-steps-list" aria-label={copy.paymentAria}>
                 {Object.values(copy.depositMethods).map((item) => (
-                  <div className="deposit-option active" key={item}>
+                  <div className="next-step-item" key={item}>
                     <ShieldCheck size={18} aria-hidden="true" />
                     <span>{item}</span>
                   </div>
@@ -646,7 +646,7 @@ export function PatientBookingAction() {
           </div>
 
           <aside className="booking-summary" aria-label={copy.summaryAria}>
-            <div className="summary-total">
+            <div className="summary-total compact-summary-note">
               <span>{copy.depositLabel}</span>
               <strong>{copy.depositText}</strong>
             </div>

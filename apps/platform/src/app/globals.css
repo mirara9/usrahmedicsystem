@@ -760,21 +760,32 @@ select {
 
 .patient-hero {
   display: grid;
-  grid-template-columns: minmax(320px, 0.95fr) minmax(420px, 1.2fr);
-  gap: clamp(28px, 5vw, 72px);
+  grid-template-columns: 1fr;
+  gap: 22px;
   align-items: start;
-  min-height: calc(100vh - 88px);
-  padding: clamp(34px, 6vw, 84px) clamp(18px, 5vw, 72px) 42px;
+  min-height: auto;
+  padding: clamp(28px, 5vw, 56px) clamp(18px, 5vw, 72px) 14px;
   background:
-    linear-gradient(90deg, rgba(0, 139, 131, 0.07), rgba(236, 19, 127, 0.06)),
+    linear-gradient(180deg, rgba(0, 139, 131, 0.05), rgba(236, 19, 127, 0.04)),
     #fff;
 }
 
 .patient-hero-copy {
-  position: sticky;
-  top: 102px;
+  position: static;
   display: grid;
-  gap: 18px;
+  gap: 16px;
+}
+
+.patient-hero-simple {
+  padding-bottom: 6px;
+}
+
+.patient-hero-compact {
+  padding-bottom: 0;
+}
+
+.patient-hero-copy-simple {
+  max-width: 720px;
 }
 
 .patient-logo {
@@ -793,16 +804,16 @@ select {
   max-width: 720px;
   margin: 0;
   color: #1f272b;
-  font-size: clamp(2.35rem, 5vw, 4.8rem);
-  line-height: 1.02;
+  font-size: clamp(1.85rem, 3.1vw, 2.7rem);
+  line-height: 1.12;
 }
 
 .patient-hero p {
-  max-width: 720px;
+  max-width: 760px;
   margin: 0;
   color: #617078;
-  font-size: 1.02rem;
-  line-height: 1.72;
+  font-size: 1rem;
+  line-height: 1.68;
 }
 
 .patient-trust-row {
@@ -957,7 +968,7 @@ select {
 }
 
 .patient-section {
-  padding: 42px clamp(18px, 5vw, 72px);
+  padding: 36px clamp(18px, 5vw, 72px);
 }
 
 .patient-section .section-heading {
@@ -973,6 +984,22 @@ select {
   max-width: 560px;
   color: #64737a;
   line-height: 1.65;
+}
+
+.patient-request-shell {
+  padding: 0 clamp(18px, 5vw, 72px) 24px;
+}
+
+.patient-request-shell-compact {
+  padding-top: 8px;
+}
+
+.patient-request-grid {
+  max-width: 980px;
+}
+
+.patient-request-grid .booking-card {
+  width: 100%;
 }
 
 .service-card {
@@ -1226,22 +1253,22 @@ html[lang="zh-Hans"] .patient-hero h1 {
 
 .booking-layout {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(240px, 0.42fr);
-  gap: 16px;
+  grid-template-columns: 1fr;
+  gap: 18px;
   align-items: start;
 }
 
 .booking-main {
   display: grid;
-  gap: 14px;
+  gap: 16px;
 }
 
 .booking-section {
   display: grid;
-  gap: 13px;
+  gap: 16px;
   border: 1px solid #efe2e8;
   border-radius: 8px;
-  padding: 16px;
+  padding: 20px;
   background: #fff;
 }
 
@@ -1279,7 +1306,7 @@ html[lang="zh-Hans"] .patient-hero h1 {
 .booking-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 12px;
+  gap: 14px;
 }
 
 .field-wide {
@@ -1308,22 +1335,24 @@ html[lang="zh-Hans"] .patient-hero h1 {
 
 .deposit-options {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: 1fr;
   gap: 10px;
 }
 
 .deposit-option {
   display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  min-height: 46px;
+  align-items: flex-start;
+  justify-content: flex-start;
+  gap: 10px;
+  min-height: 56px;
   border: 1px solid #ded8dc;
   border-radius: 8px;
+  padding: 12px 14px;
   background: #fff;
   color: #273138;
-  cursor: pointer;
+  cursor: default;
   font-weight: 800;
+  line-height: 1.45;
 }
 
 .deposit-option.active {
@@ -1332,22 +1361,37 @@ html[lang="zh-Hans"] .patient-hero h1 {
   color: var(--brand-pink-dark);
 }
 
-.booking-summary {
-  position: sticky;
-  top: 94px;
+.next-steps-list {
   display: grid;
-  gap: 14px;
+  gap: 10px;
+}
+
+.next-step-item {
+  display: grid;
+  grid-template-columns: 20px minmax(0, 1fr);
+  gap: 10px;
+  align-items: start;
+  color: #273138;
+  font-weight: 700;
+  line-height: 1.5;
+}
+
+.booking-summary {
+  position: static;
+  display: grid;
+  gap: 16px;
   border: 1px solid rgba(236, 19, 127, 0.18);
   border-radius: 8px;
-  padding: 16px;
+  padding: 18px;
   background: #fff6fa;
 }
 
 .summary-total {
   display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  gap: 12px;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+  gap: 8px;
 }
 
 .summary-total span {
@@ -1357,9 +1401,9 @@ html[lang="zh-Hans"] .patient-hero h1 {
 
 .summary-total strong {
   color: var(--brand-pink);
-  font-size: clamp(1.8rem, 3.4vw, 2.35rem);
-  line-height: 1;
-  white-space: nowrap;
+  font-size: 1rem;
+  line-height: 1.5;
+  white-space: normal;
 }
 
 .booking-summary dl {
@@ -1644,7 +1688,7 @@ html[lang="zh-Hans"] .patient-hero h1 {
   }
 
   .deposit-options {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: 1fr;
   }
 }
 
