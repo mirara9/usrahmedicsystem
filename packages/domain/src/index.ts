@@ -4,5 +4,6 @@ export * from "./insuranceClaims";
 export * from "./medicine";
 export * from "./permissions";
 export * from "./productCapabilities";
+export * from "./providerDecisions";
 export * from "./types";
 export * from "./workflowContracts";

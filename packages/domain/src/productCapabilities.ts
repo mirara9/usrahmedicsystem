@@ -32,15 +32,15 @@ export const productCapabilities = [
     id: "auth-mfa-staff-accounts",
     category: "access",
     title: "Real login, MFA, staff accounts, and secure sessions",
-    currentStatus: "notImplemented",
+    currentStatus: "providerDependent",
     foundationEvidence: ["Role and permission model exists in packages/domain/src/permissions.ts."],
     productionNeeded: [
-      "Choose IdP and session architecture.",
-      "Implement staff invitation, activation, suspension, password reset, MFA enrollment, recovery, and remote logout.",
+      "Implement Microsoft Entra ID OIDC with Microsoft Authenticator MFA/passkey enforcement.",
+      "Implement staff invitation, activation, suspension, password reset, MFA enrollment evidence, recovery, and remote logout.",
       "Replace temporary role/header assumptions with server-enforced sessions and CSRF protection.",
       "Add audit events for login, failed login, MFA changes, privilege changes, and session revocation."
     ],
-    providerDependencies: ["Managed OIDC/IdP or self-hosted Keycloak", "SMS/email provider for OTP or recovery"],
+    providerDependencies: ["Microsoft Entra ID tenant/app registration", "Microsoft Authenticator MFA/Conditional Access policy", "SendGrid for non-MFA recovery/support email"],
     complianceDependencies: ["PDPA access control evidence", "Staff credential governance"],
     phase: "phase-1"
   },
@@ -75,7 +75,7 @@ export const productCapabilities = [
       "Support corrections without hard delete.",
       "Add duplicate matching and patient merge governance."
     ],
-    providerDependencies: ["Object storage for attachments and reports"],
+    providerDependencies: ["AWS S3 ap-southeast-5 object storage for attachments and reports"],
     complianceDependencies: ["MMC no-delete medical record controls", "PDPA access/correction/export workflows"],
     phase: "phase-2"
   },
@@ -93,7 +93,7 @@ export const productCapabilities = [
       "Implement walk-in registration, triage priority, room call, queue transfer, hold, skip, and discharge.",
       "Sync appointment deposit state with queue arrival state."
     ],
-    providerDependencies: ["Payment provider for deposit authorization/capture/refund", "SMS/email reminder provider"],
+    providerDependencies: ["Billplz payment intent/webhook/refund integration", "Twilio SMS and SendGrid reminder providers"],
     complianceDependencies: ["PDPA consent for reminders", "Clinic SOP for queue priority handling"],
     phase: "phase-2"
   },
@@ -109,7 +109,7 @@ export const productCapabilities = [
       "Generate MC with doctor identity, branch, patient, date range, restrictions, serial number, QR/verification, and reprint audit.",
       "Create document templates for referral letters, consent forms, and patient reports."
     ],
-    providerDependencies: ["PDF/document rendering service or library", "Secure object storage"],
+    providerDependencies: ["PDF/document rendering service or library", "AWS S3 ap-southeast-5 secure object storage"],
     complianceDependencies: ["MMC documentation standards", "Clinic legal review for MC wording"],
     phase: "phase-2"
   },
@@ -129,7 +129,7 @@ export const productCapabilities = [
       "Implement MyInvois document states, validation, submission, cancellation, QR/UUID storage, and failure recovery.",
       "Connect RM10 booking deposit to appointment billing and final invoice settlement."
     ],
-    providerDependencies: ["Payment gateway", "LHDN MyInvois integration", "Panel/TPA integrations", "Accounting export target"],
+    providerDependencies: ["Billplz payment gateway", "LHDN MyInvois API credentials", "MiCare first TPA adapter, then PMCare and HealthMetrics by contract", "Accounting export target"],
     complianceDependencies: ["LHDN e-Invoicing compliance", "Finance approval policy", "PDPA data sharing basis"],
     phase: "phase-3"
   },
@@ -164,7 +164,7 @@ export const productCapabilities = [
       "Build revenue, collection, refund, AR aging, panel claim, doctor productivity, stock valuation, expiry, and branch comparison reports.",
       "Implement report permissions, PHI redaction rules, export audit, and scheduled report delivery."
     ],
-    providerDependencies: ["Accounting export target if required", "Email/report delivery provider if scheduled"],
+    providerDependencies: ["Accounting export target if required", "SendGrid email/report delivery provider if scheduled"],
     complianceDependencies: ["PDPA minimization and export audit"],
     phase: "phase-5"
   },
@@ -186,16 +186,16 @@ export const productCapabilities = [
   {
     id: "malaysian-hosted-database",
     category: "platform",
-    title: "Malaysian-hosted production database decision",
-    currentStatus: "decisionRequired",
+    title: "Malaysian-hosted production database",
+    currentStatus: "providerDependent",
     foundationEvidence: ["Cloudflare D1 foundation database is configured, but Malaysia data residency is not guaranteed."],
     productionNeeded: [
-      "Decide whether Malaysia residency is mandatory for production PHI and financial records.",
-      "If mandatory, select a Malaysia-hosted PostgreSQL provider or self-managed Malaysia region infrastructure.",
+      "Provision AWS ap-southeast-5 Aurora PostgreSQL or RDS PostgreSQL for production PHI and financial records.",
       "Document backup, restore, encryption, monitoring, DR, data processing agreements, and cross-border transfer basis.",
+      "Migrate the canonical write model from D1 foundation tables to PostgreSQL before real PHI go-live.",
       "Keep D1 only for non-PHI edge foundation data unless residency and durability requirements are approved."
     ],
-    providerDependencies: ["Malaysia-hosted PostgreSQL or approved database provider", "Backup/monitoring provider"],
+    providerDependencies: ["AWS ap-southeast-5 PostgreSQL", "AWS S3 ap-southeast-5 document/backup storage", "Sentry and AWS backup monitoring"],
     complianceDependencies: ["PDPA cross-border transfer assessment", "Clinic risk acceptance"],
     phase: "phase-1"
   },
@@ -210,7 +210,7 @@ export const productCapabilities = [
       "Implement environment management, secrets rotation, rollback, monitoring, uptime checks, error tracking, audit log retention, backup, and DR drills.",
       "Define release notes and clinic downtime/maintenance communication process."
     ],
-    providerDependencies: ["GitHub Actions or CI provider", "Monitoring/error tracking provider", "Backup storage provider"],
+    providerDependencies: ["GitHub Actions", "Cloudflare Pages", "Sentry", "AWS backup storage"],
     complianceDependencies: ["Change management evidence", "Security incident response process"],
     phase: "phase-1"
   },
@@ -218,14 +218,14 @@ export const productCapabilities = [
     id: "support-onboarding",
     category: "support",
     title: "Standard support, priority support, assisted onboarding, and ongoing improvements",
-    currentStatus: "notImplemented",
+    currentStatus: "partiallyImplemented",
     foundationEvidence: ["Rollout documentation exists, but no product support workflow exists."],
     productionNeeded: [
       "Define support plans, SLAs, escalation paths, support intake, ticket categories, severity levels, and clinic admin contacts.",
       "Build assisted onboarding checklist for branch setup, service catalog, staff import, patient import, panel setup, stock opening balance, printer setup, and training.",
       "Add feedback intake, changelog, feature flag rollout, and post-release issue review process."
     ],
-    providerDependencies: ["Support desk provider", "Knowledge base provider", "Status page provider"],
+    providerDependencies: ["Freshdesk support desk and knowledge base", "Freshdesk SLA policies", "Status page provider"],
     complianceDependencies: ["Support access policy for PHI", "Vendor processor register"],
     phase: "phase-4"
   }
@@ -261,4 +261,3 @@ export function getCapabilityById(id: ProductCapabilityId): ProductCapability {
 export function getCapabilitiesByStatus(status: CapabilityStatus): ProductCapability[] {
   return productCapabilities.filter((capability) => capability.currentStatus === status);
 }
-

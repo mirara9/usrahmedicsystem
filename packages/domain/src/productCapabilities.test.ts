@@ -15,19 +15,15 @@ describe("product capability map", () => {
     expect(actualIds.sort()).toEqual([...requiredProductionCapabilityIds].sort());
   });
 
-  it("keeps provider-dependent and decision-required capabilities explicit", () => {
+  it("keeps provider-dependent capabilities explicit after provider selection", () => {
     const providerDependent = getCapabilitiesByStatus("providerDependent");
     const decisionRequired = getCapabilitiesByStatus("decisionRequired");
 
     expect(providerDependent.length).toBeGreaterThan(0);
-    expect(decisionRequired.length).toBeGreaterThan(0);
+    expect(decisionRequired).toHaveLength(0);
 
     for (const capability of providerDependent) {
       expect(capability.providerDependencies.length).toBeGreaterThan(0);
-    }
-
-    for (const capability of decisionRequired) {
-      expect([...capability.productionNeeded, ...capability.complianceDependencies].join(" ")).toMatch(/decide|decision|assessment|acceptance/i);
     }
   });
 
@@ -40,8 +36,9 @@ describe("product capability map", () => {
   });
 
   it("identifies external decisions that code alone cannot complete", () => {
-    expect(getCapabilityById("malaysian-hosted-database" as ProductCapabilityId).currentStatus).toBe("decisionRequired");
+    expect(getCapabilityById("auth-mfa-staff-accounts" as ProductCapabilityId).providerDependencies.join(" ")).toMatch(/Microsoft Authenticator/);
+    expect(getCapabilityById("malaysian-hosted-database" as ProductCapabilityId).currentStatus).toBe("providerDependent");
     expect(getCapabilityById("billing-invoices-panels-myinvois-payments" as ProductCapabilityId).currentStatus).toBe("providerDependent");
-    expect(getCapabilitiesByStatus("notImplemented").map((capability) => capability.id)).toContain("support-onboarding");
+    expect(getCapabilityById("billing-invoices-panels-myinvois-payments" as ProductCapabilityId).providerDependencies.join(" ")).toMatch(/Billplz|MyInvois|MiCare/);
   });
 });

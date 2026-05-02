@@ -68,11 +68,22 @@ npm run build
 
 This is not yet the final clinic management system. It is the first executable Cloudflare foundation.
 
-Production still needs:
+Production provider decisions are now selected:
 
-- Real authentication and staff MFA.
-- PostgreSQL persistence and audit storage.
-- Payment, MyInvois, panel/TPA, WhatsApp, lab/radiology, and accounting integrations.
+- Staff auth/MFA: Microsoft Entra ID with Microsoft Authenticator.
+- Payment gateway: Billplz.
+- LHDN e-Invoicing: direct MyInvois API.
+- Panel/TPA: MiCare first adapter, then PMCare and HealthMetrics by contract.
+- SMS/email: Twilio SMS and Twilio SendGrid Email API.
+- Malaysia data platform: AWS `ap-southeast-5` Aurora/RDS PostgreSQL and S3.
+- Support/onboarding: Freshdesk.
+- CI/CD and monitoring: GitHub Actions, Cloudflare Pages, Sentry, and AWS backup controls.
+
+Production still needs the actual credentials, contracts, policies, and implementation work:
+
+- Microsoft Entra tenant/app registration, BFF sessions, staff account mapping, and MFA enforcement.
+- AWS Malaysia PostgreSQL/S3 provisioning, migration from D1 foundation storage, and audit hardening.
+- Billplz, MyInvois, panel/TPA, SMS/email, lab/radiology, and accounting integrations.
 - Legal review for PDPA, CKAPS, MAB, OHS, prescribing, and dispensing workflows.
 - Migration of real branch, panel, patient, service, price, and stock data.
 - Security testing, backup/DR drills, and pilot branch rollout.

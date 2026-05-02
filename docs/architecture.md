@@ -46,19 +46,25 @@ New branch-scoped endpoints use `staff_branch_assignments` for branch isolation.
 ## Longer-Term Production Target
 
 - Keep a modular monolith backend first.
-- Use PostgreSQL as the canonical write model.
+- Use AWS Asia Pacific (Malaysia), `ap-southeast-5`, Aurora PostgreSQL or RDS PostgreSQL as the canonical write model for PHI and financial records.
 - Use Redis for queue/session/cache needs.
-- Use object storage for reports, scans, consent forms, referral documents, ultrasound images, and invoices.
+- Use AWS S3 in `ap-southeast-5` for reports, scans, consent forms, referral documents, ultrasound images, invoices, and backups.
 - Use outbox events only for audit-critical and integration-critical workflows in v1.
 
-## Security Decisions To Lock Before Backend Build
+## Locked Provider Decisions
 
-- IdP provider: managed OIDC or self-hosted Keycloak after residency and support review.
+- Staff auth/MFA: Microsoft Entra ID OIDC with Microsoft Authenticator MFA/passkey and Conditional Access. The staff login should match the admin.caricite.com-style Microsoft authentication page.
 - Staff web session model: BFF session with CSRF protection.
 - Mobile auth: Authorization Code + PKCE, secure token storage, remote logout.
 - Authorization: service-layer RBAC and ABAC, with database RLS only as defense in depth.
 - Audit: append-only and tamper-evident audit events for patient record access, edits, exports, printing, billing, stock movement, and admin actions.
 - Data classification: PHI, PII, financial, operational, marketing, and audit.
+- Payments: Billplz for RM10 booking deposits, payment links, webhooks, refunds, and reconciliation.
+- Tax: direct LHDN MyInvois API for TIN validation, signed document submission, cancellation/rejection, UUID/QR storage, and reconciliation.
+- Panel/TPA: MiCare first adapter, then PMCare and HealthMetrics adapters where contracts/API access exist.
+- Communications: Twilio SMS for low-PHI appointment notifications and SendGrid Email API for transactional email. Microsoft Authenticator handles staff MFA instead of SMS OTP.
+- Support: Freshdesk for support tickets, SLA policies, knowledge base, priority support, and assisted onboarding.
+- Operations: GitHub Actions for checks and protected promotion, Cloudflare Pages for web deployment, Sentry for error tracking, and AWS backup controls for data protection.
 
 ## Avoid In V1
 
