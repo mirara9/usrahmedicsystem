@@ -1,5 +1,5 @@
 {
-  "name": "usrahmedic-platform",
+  "name": "usrahmedic-cms",
   "version": "0.1.0",
   "private": true,
   "workspaces": [
@@ -11,9 +11,9 @@
     "build": "npm --workspace @usrahmedic/platform run build",
     "build:cloudflare": "npm run build",
     "preview:cloudflare": "npm run build:cloudflare && wrangler pages dev apps/platform/out",
-    "deploy:cloudflare": "npm run build:cloudflare && wrangler pages deploy apps/platform/out --project-name usrahmedic-platform",
-    "db:migrate:local": "wrangler d1 migrations apply usrahmedic-platform --local",
-    "db:migrate:remote": "wrangler d1 migrations apply usrahmedic-platform --remote",
+    "deploy:cloudflare": "npm run build:cloudflare && wrangler pages deploy apps/platform/out --project-name usrahmedic-cms",
+    "db:migrate:local": "wrangler d1 migrations apply usrahmedic-cms --local",
+    "db:migrate:remote": "wrangler d1 migrations apply usrahmedic-cms --remote",
     "lint": "eslint --no-error-on-unmatched-pattern \"apps/platform/src/**/*.{ts,tsx}\" \"packages/domain/src/**/*.{ts,tsx}\" \"functions/**/*.js\" \"functions/**/*.ts\" \"types/**/*.d.ts\"",
     "test": "vitest run",
     "typecheck": "tsc -p tsconfig.json --noEmit"

@@ -21,7 +21,7 @@ export async function onRequestGet(context) {
 
   return json(context, {
     ok: checks.d1 === "ok",
-    service: "usrahmedic-platform",
+    service: "usrahmedic-cms",
     environment: context.env.APP_ENV || "unknown",
     time: new Date().toISOString(),
     checks

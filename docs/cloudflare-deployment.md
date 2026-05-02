@@ -15,10 +15,10 @@ Important architecture note for the current project direction:
 
 Current Cloudflare foundation deployment:
 
-- Pages project: `usrahmedic-platform`
+- Pages project: `usrahmedic-cms`
 - Foundation URL: `https://usrahmedic-cms.pages.dev`
-- Foundation D1 database: `usrahmedic-platform`
-- Preview D1 database: `usrahmedic-platform-preview`
+- Foundation D1 database: `usrahmedic-cms`
+- Preview D1 database: `usrahmedic-cms-preview`
 
 ## One-time setup
 
@@ -32,13 +32,13 @@ npx wrangler whoami
 2. Create the Pages project if it does not exist.
 
 ```powershell
-npx wrangler pages project create usrahmedic-platform --production-branch=main
+npx wrangler pages project create usrahmedic-cms --production-branch=main
 ```
 
 3. Create the foundation D1 database if it does not already exist.
 
 ```powershell
-npx wrangler d1 create usrahmedic-platform
+npx wrangler d1 create usrahmedic-cms
 ```
 
 Copy the returned database UUID into `wrangler.toml`:
@@ -50,7 +50,7 @@ database_id = "<PRODUCTION_D1_DATABASE_ID>"
 4. Create a preview D1 database if it does not already exist, or reuse production only for a controlled smoke test.
 
 ```powershell
-npx wrangler d1 create usrahmedic-platform-preview
+npx wrangler d1 create usrahmedic-cms-preview
 ```
 
 Copy the returned UUID into `wrangler.toml`:
@@ -68,7 +68,7 @@ ALLOWED_ORIGINS = "https://usrahmedic-cms.pages.dev,https://<CUSTOM_DOMAIN>"
 6. Optional but recommended: set an audit hash pepper as a Cloudflare secret. Do not commit the value.
 
 ```powershell
-npx wrangler pages secret put AUDIT_HASH_PEPPER --project-name=usrahmedic-platform
+npx wrangler pages secret put AUDIT_HASH_PEPPER --project-name=usrahmedic-cms
 ```
 
 ## Migrations
@@ -76,13 +76,13 @@ npx wrangler pages secret put AUDIT_HASH_PEPPER --project-name=usrahmedic-platfo
 Run migrations locally first.
 
 ```powershell
-npx wrangler d1 migrations apply usrahmedic-platform --local
+npx wrangler d1 migrations apply usrahmedic-cms --local
 ```
 
 Run migrations against the remote foundation database after `wrangler.toml` has real D1 IDs.
 
 ```powershell
-npx wrangler d1 migrations apply usrahmedic-platform --remote
+npx wrangler d1 migrations apply usrahmedic-cms --remote
 ```
 
 For preview database validation, temporarily set `database_id` to the preview database ID or use the Cloudflare dashboard binding for the preview environment, then run the same migration command against the preview database name.
@@ -135,13 +135,13 @@ Build and deploy a branch preview.
 
 ```powershell
 npm run build:cloudflare
-npx wrangler pages deploy apps/platform/out --project-name=usrahmedic-platform --branch=<PREVIEW_BRANCH>
+npx wrangler pages deploy apps/platform/out --project-name=usrahmedic-cms --branch=<PREVIEW_BRANCH>
 ```
 
 Preview URL format:
 
 ```text
-https://<PREVIEW_BRANCH>.usrahmedic-platform.pages.dev
+https://<PREVIEW_BRANCH>.usrahmedic-cms.pages.dev
 ```
 
 ## Foundation deployment
@@ -151,9 +151,9 @@ Use this only for the current Cloudflare foundation environment, not as the fina
 Apply remote migrations before deploying code that depends on new tables.
 
 ```powershell
-npx wrangler d1 migrations apply usrahmedic-platform --remote
+npx wrangler d1 migrations apply usrahmedic-cms --remote
 npm run build:cloudflare
-npx wrangler pages deploy apps/platform/out --project-name=usrahmedic-platform
+npx wrangler pages deploy apps/platform/out --project-name=usrahmedic-cms
 ```
 
 Production URL format:

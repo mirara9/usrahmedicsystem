@@ -3,7 +3,7 @@ import { LanguageProvider } from "../components/language";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "UsrahMedic Platform",
+  title: "UsrahMedic CMS",
   description: "Clinic management platform foundation for UsrahMedic"
 };
 

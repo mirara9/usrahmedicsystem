@@ -1,4 +1,4 @@
-# UsrahMedic Platform
+# UsrahMedic CMS
 
 Execution note:
 - `plan.md` is the master execution sequence until implementation begins.
