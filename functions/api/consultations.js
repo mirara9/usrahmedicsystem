@@ -3,6 +3,7 @@ import {
   createId,
   getDb,
   handleOptions,
+  HttpError,
   json,
   optionalJson,
   readJson,
@@ -58,6 +59,29 @@ export async function onRequestPost(context) {
     const consultationId = cleanString(body.id, 128) || createId("consult");
     const status = cleanString(body.status, 20) || "draft";
     const signedAt = status === "signed" ? (cleanString(body.signedAt, 40) || new Date().toISOString()) : null;
+    const branchRole = cleanString(actor.branchRole, 40) || actor.role;
+    const amendedFromId = cleanString(body.amendedFromId, 128);
+
+    if (status === "signed" && !["doctor", "owner", "admin"].includes(branchRole)) {
+      throw new HttpError(403, "SIGNATURE_ROLE_REQUIRED", "Only doctor-authorized roles can sign a consultation.");
+    }
+
+    if (status === "amended") {
+      if (!amendedFromId) {
+        throw new HttpError(400, "AMENDMENT_SOURCE_REQUIRED", "amendedFromId is required for amended consultations.");
+      }
+
+      const sourceConsultation = await db.prepare(
+        `SELECT id, branch_id, status
+        FROM consultations
+        WHERE id = ?
+        LIMIT 1`
+      ).bind(amendedFromId).first();
+
+      if (!sourceConsultation || sourceConsultation.branch_id !== branchId || sourceConsultation.status !== "signed") {
+        throw new HttpError(400, "AMENDMENT_SOURCE_INVALID", "Amended consultations must reference an existing signed consultation in the same branch.");
+      }
+    }
 
     await db.prepare(
       `INSERT INTO consultations (
@@ -77,7 +101,7 @@ export async function onRequestPost(context) {
       optionalJson(body.richText),
       status,
       signedAt,
-      cleanString(body.amendedFromId, 128)
+      amendedFromId
     ).run();
 
     if (status === "signed") {

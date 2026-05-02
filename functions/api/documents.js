@@ -3,6 +3,7 @@ import {
   createId,
   getDb,
   handleOptions,
+  HttpError,
   json,
   optionalJson,
   readJson,
@@ -63,6 +64,18 @@ export async function onRequestPost(context) {
     const documentId = cleanString(body.id, 128) || createId("doc");
     const documentType = cleanString(body.documentType, 40) || "clinical_note";
     const status = cleanString(body.status, 20) || "draft";
+    const branchRole = cleanString(actor.branchRole, 40) || actor.role;
+
+    if (body.medicalCertificate) {
+      const certificateStatus = cleanString(body.medicalCertificate.status, 20) || "draft";
+      if (certificateStatus === "issued" && status !== "final") {
+        throw new HttpError(400, "MC_FINAL_DOCUMENT_REQUIRED", "Issued medical certificates require a final clinical document.");
+      }
+
+      if (certificateStatus === "issued" && !["doctor", "owner", "admin"].includes(branchRole)) {
+        throw new HttpError(403, "MC_ISSUER_ROLE_REQUIRED", "Only doctor-authorized roles can issue a medical certificate.");
+      }
+    }
 
     await db.prepare(
       `INSERT INTO clinical_documents (
