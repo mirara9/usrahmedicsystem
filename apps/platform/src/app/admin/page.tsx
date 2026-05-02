@@ -18,7 +18,7 @@ import {
   WalletCards
 } from "lucide-react";
 import { branches, complianceControls, queueTickets } from "@usrahmedic/domain";
-import { AdminRegistrationAction } from "../../components/actions";
+import { AdminRegistrationAction, InsuranceClaimAction } from "../../components/actions";
 import { CloudflareReadiness, DashboardShell, IntegrationNotice, StatCard } from "../../components/chrome";
 import { WorkflowRail } from "../../components/workflow";
 
@@ -199,6 +199,36 @@ export default function AdminPage() {
               <p>{module.detail}</p>
             </article>
           ))}
+        </div>
+      </section>
+
+      <section className="section grid grid-2">
+        <div className="panel">
+          <h2>Insurance, TPA, and takaful claims</h2>
+          <p>AIA, PMCare, MiCare, HealthMetrics, CompuMed, takaful, and corporate panels use one payer workflow with mock data in demo and production-equivalent API contracts.</p>
+          <CloudflareReadiness endpoint="/api/claims/eligibility" note="Runs eligibility, GL/preauth, claim submission, remittance, and audit events through Pages Functions." />
+          <InsuranceClaimAction />
+        </div>
+
+        <div className="panel">
+          <h2>Claim lifecycle</h2>
+          <div className="timeline">
+            {[
+              "Register payer membership and branch panel contract",
+              "Verify eligibility, plan limit, copay, exclusions, and claim mode",
+              "Request GL/preauth when required by insurer, takaful, or TPA",
+              "Submit claim packet with invoice, receipt, clinical note, referral, and attachments",
+              "Track query, approval, rejection, payment, and reconciliation"
+            ].map((step, index) => (
+              <div className="workflow-step" key={step}>
+                <span className="step-dot">{index + 1}</span>
+                <div>
+                  <strong>{step}</strong>
+                  <p className="muted">Demo uses synthetic payer data; production swaps in contracted provider adapters.</p>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 

@@ -28,7 +28,7 @@ This plan is the working feature matrix for moving UsrahMedic from the current C
 | Queue management | Partially implemented | Queue states and seeded tickets exist. | Walk-in registration, triage priority, room call, transfer, hold, skip, discharge, SLA timers, screen display. | Branch operational SOP. |
 | Consultation and service billing | Not implemented | Billing permissions exist. | Draft bill from services/procedures/medicine, discount/approval rules, cash/card/QR/e-wallet settlement, refund/void/reversal, receipt. | Payment provider and finance policy. |
 | Editable bills and invoices | Not implemented | No billing ledger exists. | Draft/final states, edit reasons, approval thresholds, invoice numbering, tax handling, audit, printable receipt/invoice. | Finance approval and tax/legal sign-off. |
-| Insurance and panel pricing | Not implemented | Claim permission exists. | Panel directory, eligibility, panel-specific price schedules, GL/claim states, AR aging, rejection/rework workflow. | Panel/TPA contract and integration requirements. |
+| Insurance and panel pricing | Partially implemented | Payer provider, membership, eligibility, GL/preauth, claim submission, rejection, remittance, and reconciliation foundation exists for insurer, takaful, TPA, and corporate panel workflows. | Contracted provider adapters, real payer credentials, panel-specific fee schedules, AR aging, portal/API reconciliation, rejection/rework operations, and provider-specific claim forms. | Panel/TPA contract and integration requirements. |
 | LHDN e-Invoicing compliance | Provider dependent | No MyInvois workflow exists. | MyInvois states, validation, submission, UUID/QR storage, cancellation/rejection handling, retry queue, reconciliation reports. | LHDN/MyInvois integration, taxpayer profile, tax advisor sign-off. |
 | RM10 booking deposit and payments | Provider dependent | Patient booking UI references a deposit intent; no real capture/refund exists. | Payment session, webhook verification, deposit ledger, refund/cancel rules, invoice settlement mapping, reconciliation. | Payment gateway and bank settlement process. |
 | Medication and inventory management | Partially implemented | Medicine safety logic, stock receive/scan contracts, and medicine UI foundation exist. | Medicine master CRUD, opening balance, receive, transfer, stocktake, adjustment, quarantine, expiry, recall, disposal, valuation, audit. | Supplier data, stock opening balance, pharmacy legal review. |
@@ -110,7 +110,7 @@ These cannot be completed purely in code:
 - Malaysia-hosted database decision if local residency is mandatory.
 - Payment gateway for RM10 deposits, final payments, refunds, and reconciliation.
 - LHDN MyInvois production integration and tax advisor sign-off.
-- Panel/TPA integrations and contracts.
+- Panel/TPA/insurer/takaful integrations and contracts, including AIA, PMCare, MiCare, HealthMetrics, CompuMed, and other payer provider credentials or portal workflows.
 - SMS/email provider for reminders and auth recovery.
 - Document/PDF rendering and secure object storage.
 - Label printer and receipt printer hardware/browser print strategy.

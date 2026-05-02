@@ -36,6 +36,7 @@ The Cloudflare Pages Functions backend exposes minimal create/list endpoints for
 - `/api/documents` for rich text clinical documents and medical certificates.
 - `/api/billing/invoices` and `/api/billing/payments` for editable invoice/payment foundations.
 - `/api/panels` for panel/insurance providers and branch-specific price rules.
+- `/api/claims/providers`, `/api/claims/memberships`, `/api/claims/eligibility`, `/api/claims/preauth`, `/api/claims/submissions`, and `/api/claims/remittances` for production-equivalent insurer, takaful, TPA, and corporate panel claim workflows using mock adapters in demo.
 - `/api/inventory/imports`, `/api/inventory/adjustments`, `/api/inventory/dispense`, and `/api/inventory/labels` for pharmacy workflows.
 - `/api/reports/snapshots` for real report snapshots generated from live operational tables.
 - `/api/support/tickets` and `/api/onboarding/tasks` for support and assisted onboarding.

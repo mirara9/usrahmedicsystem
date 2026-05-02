@@ -4,7 +4,7 @@ import type { ReactNode } from "react";
 import { useRef, useState } from "react";
 import { AlertCircle, CalendarCheck, CheckCircle2, Download, LoaderCircle, LockKeyhole, PackagePlus, QrCode, ShieldCheck, UserPlus, WalletCards, WifiOff } from "lucide-react";
 
-type PanelKind = "admin" | "medicine" | "insight" | "patient" | "staff";
+type PanelKind = "admin" | "medicine" | "insight" | "patient" | "staff" | "claims";
 type ActionTone = "idle" | "loading" | "success" | "fallback" | "error";
 
 interface ActionState {
@@ -36,7 +36,8 @@ const endpointLabels: Record<PanelKind, string> = {
   medicine: "/api/stock/receive",
   insight: "/api/owner/export",
   patient: "/api/appointments",
-  staff: "/api/stock/scan"
+  staff: "/api/stock/scan",
+  claims: "/api/claims/eligibility"
 };
 
 const loadingState: Record<PanelKind, ActionState> = {
@@ -63,6 +64,11 @@ const loadingState: Record<PanelKind, ActionState> = {
   staff: {
     title: "Checking stock scan",
     detail: `Posting to ${endpointLabels.staff}...`,
+    tone: "loading"
+  },
+  claims: {
+    title: "Checking payer eligibility",
+    detail: "Running eligibility, GL, claim submission, and remittance through the production claims API contracts...",
     tone: "loading"
   }
 };
@@ -96,6 +102,11 @@ const initialState: Record<PanelKind, ActionState> = {
   staff: {
     title: "No stock item scanned",
     detail: `Ready to call ${endpointLabels.staff}; local fallback remains available.`,
+    tone: "idle"
+  },
+  claims: {
+    title: "No payer claim processed",
+    detail: "Ready to run a production-equivalent mock payer flow for AIA, PMCare, Takaful, or a generic TPA.",
     tone: "idle"
   }
 };
@@ -224,6 +235,171 @@ export function MedicineReceiveStockAction() {
       <label className="field">
         <span>Quantity</span>
         <input value={quantity} onChange={(event) => setQuantity(event.target.value)} inputMode="numeric" />
+      </label>
+    </ActionPanel>
+  );
+}
+
+export function InsuranceClaimAction() {
+  const [payer, setPayer] = useState("payer-pmcare");
+  const [claimMode, setClaimMode] = useState("guarantee_letter");
+  const [scenario, setScenario] = useState("approve");
+  const [amount, setAmount] = useState("180");
+  const [state, setState] = useState(initialState.claims);
+
+  return (
+    <ActionPanel
+      icon="claims"
+      onLoading={() => setState(loadingState.claims)}
+      state={state}
+      title="Run claim"
+      onSubmit={async () => {
+        const amountCents = Math.max(100, Math.round(Number.parseFloat(amount || "0") * 100));
+        const claimId = `claim-demo-${Date.now()}`;
+        const eligibilityId = `eligibility-demo-${Date.now()}`;
+        const preauthId = `preauth-demo-${Date.now()}`;
+        const auth = {
+          actorId: "platform-billing-preview",
+          role: "admin" as const
+        };
+        const eligibility = await postCloudflareAction("/api/claims/eligibility", {
+          id: eligibilityId,
+          branchId: "puncak-alam",
+          patientId: "patient-demo-claim",
+          payerProviderId: payer,
+          patientPayerMembershipId: "membership-demo-claim",
+          requestedClaimMode: claimMode,
+          invoiceId: "invoice-demo-claim",
+          invoiceTotalCents: amountCents,
+          outpatientCashlessEnabled: payer !== "payer-aia"
+        }, auth);
+
+        if (eligibility.kind === "error") {
+          setState({
+            title: "Eligibility check failed",
+            detail: eligibility.message,
+            tone: "error"
+          });
+          return;
+        }
+
+        if (claimMode === "guarantee_letter") {
+          const preauth = await postCloudflareAction("/api/claims/preauth", {
+            id: preauthId,
+            branchId: "puncak-alam",
+            eligibilityCheckId: eligibilityId,
+            patientId: "patient-demo-claim",
+            payerProviderId: payer,
+            invoiceId: "invoice-demo-claim",
+            requestedAmountCents: amountCents,
+            diagnosisCode: "Z00.0",
+            attachments: [{ attachmentType: "referral", storageUri: "mock://claim/referral.pdf" }]
+          }, auth);
+
+          if (preauth.kind === "error") {
+            setState({
+              title: "Guarantee letter request failed",
+              detail: preauth.message,
+              tone: "error"
+            });
+            return;
+          }
+        }
+
+        const submission = await postCloudflareAction("/api/claims/submissions", {
+          id: claimId,
+          branchId: "puncak-alam",
+          payerProviderId: payer,
+          patientId: "patient-demo-claim",
+          invoiceId: "invoice-demo-claim",
+          eligibilityCheckId: eligibilityId,
+          preauthRequestId: claimMode === "guarantee_letter" ? preauthId : undefined,
+          claimMode,
+          requestedAmountCents: amountCents,
+          invoiceTotalCents: amountCents,
+          scenario,
+          lines: [
+            {
+              localCode: "general-consultation",
+              payerCode: "OP-CONSULT",
+              description: "Demo outpatient consultation",
+              quantity: 1,
+              requestedAmountCents: amountCents
+            }
+          ],
+          attachments: [{ attachmentType: "invoice", storageUri: "mock://claim/invoice.pdf" }]
+        }, auth);
+
+        if (submission.kind === "error") {
+          setState({
+            title: "Claim submission failed",
+            detail: submission.message,
+            tone: "error"
+          });
+          return;
+        }
+
+        if (scenario === "pay" || scenario === "reconcile") {
+          const remittance = await postCloudflareAction("/api/claims/remittances", {
+            branchId: "puncak-alam",
+            payerProviderId: payer,
+            claimSubmissionId: claimId,
+            amountCents,
+            status: scenario === "reconcile" ? "reconciled" : "matched",
+            externalReference: `MOCK-REMIT-${Date.now()}`
+          }, auth);
+
+          if (remittance.kind === "error") {
+            setState({
+              title: "Remittance failed",
+              detail: remittance.message,
+              tone: "error"
+            });
+            return;
+          }
+        }
+
+        const payerName = payerOptions.find((option) => option.value === payer)?.label ?? "payer";
+        setState({
+          title: submission.kind === "fallback" ? "Claim queued for payer portal" : `${payerName} claim workflow recorded`,
+          detail:
+            submission.kind === "success"
+              ? `${claimModeLabel(claimMode)} flow completed with ${scenarioLabel(scenario)} state through production-equivalent API contracts.${formatRequestId(submission.requestId)}`
+              : `The claim data is ready for manual portal handling. ${submission.reason}`,
+          tone: submission.kind === "success" ? "success" : "fallback"
+        });
+      }}
+    >
+      <label className="field">
+        <span>Payer / TPA</span>
+        <select value={payer} onChange={(event) => setPayer(event.target.value)}>
+          {payerOptions.map((option) => (
+            <option key={option.value} value={option.value}>{option.label}</option>
+          ))}
+        </select>
+      </label>
+      <label className="field">
+        <span>Claim mode</span>
+        <select value={claimMode} onChange={(event) => setClaimMode(event.target.value)}>
+          <option value="cashless_panel">Cashless panel</option>
+          <option value="guarantee_letter">Guarantee letter / preauth</option>
+          <option value="reimbursement">Patient reimbursement</option>
+        </select>
+      </label>
+      <label className="field">
+        <span>Mock payer outcome</span>
+        <select value={scenario} onChange={(event) => setScenario(event.target.value)}>
+          <option value="approve">Approved</option>
+          <option value="query">Queried</option>
+          <option value="partial">Partially approved</option>
+          <option value="reject">Rejected</option>
+          <option value="pay">Paid</option>
+          <option value="reconcile">Reconciled</option>
+        </select>
+      </label>
+      <label className="field">
+        <span>Claim amount (RM)</span>
+        <input value={amount} onChange={(event) => setAmount(event.target.value)} inputMode="decimal" />
       </label>
     </ActionPanel>
   );
@@ -626,7 +802,8 @@ function ActionPanel({
     medicine: PackagePlus,
     insight: Download,
     patient: CalendarCheck,
-    staff: QrCode
+    staff: QrCode,
+    claims: WalletCards
   }[icon];
   const StatusIcon = {
     idle: CheckCircle2,
@@ -796,6 +973,15 @@ const depositMethods: Array<{ label: string; value: DepositMethod }> = [
   { label: "Pay at counter", value: "counter" }
 ];
 
+const payerOptions = [
+  { label: "AIA Malaysia", value: "payer-aia" },
+  { label: "AIA PUBLIC Takaful", value: "payer-aia-takaful" },
+  { label: "PMCare", value: "payer-pmcare" },
+  { label: "MiCare", value: "payer-micare" },
+  { label: "HealthMetrics", value: "payer-healthmetrics" },
+  { label: "CompuMed", value: "payer-compumed" }
+];
+
 function todayDateInputValue() {
   return new Date().toISOString().slice(0, 10);
 }
@@ -810,6 +996,25 @@ function combineAppointmentDateTime(date: string, time: string) {
 
 function depositLabel(method: DepositMethod) {
   return depositMethods.find((item) => item.value === method)?.label ?? "payment";
+}
+
+function claimModeLabel(mode: string) {
+  return {
+    cashless_panel: "cashless panel",
+    guarantee_letter: "guarantee letter",
+    reimbursement: "reimbursement"
+  }[mode] ?? "claim";
+}
+
+function scenarioLabel(scenario: string) {
+  return {
+    approve: "approved",
+    query: "queried",
+    partial: "partially approved",
+    reject: "rejected",
+    pay: "paid",
+    reconcile: "reconciled"
+  }[scenario] ?? scenario;
 }
 
 function downloadJson(payload: ActionPayload, filename: string) {

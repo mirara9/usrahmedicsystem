@@ -118,7 +118,11 @@ export const productCapabilities = [
     category: "billing",
     title: "Billing, editable invoices, panel pricing, MyInvois/LHDN, and payments",
     currentStatus: "providerDependent",
-    foundationEvidence: ["Billing and claim permissions exist, but there is no real billing ledger."],
+    foundationEvidence: [
+      "Billing and claim permissions exist.",
+      "Insurance claims domain contracts model payer providers, adapters, claim modes, GL/preauth, submissions, remittance, and reconciliation states.",
+      "Pages Functions expose a mock-adapter claims foundation for insurer, takaful, TPA, and corporate panel workflows."
+    ],
     productionNeeded: [
       "Implement service catalog pricing, editable draft bills, approvals, discounts, tax handling, receipts, refunds, voids, and cash drawer close.",
       "Implement panel/insurance eligibility, price schedules, claim submission states, guarantee letters, and AR aging.",

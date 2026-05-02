@@ -1,5 +1,6 @@
 export * from "./clinicWorkflow";
 export * from "./data";
+export * from "./insuranceClaims";
 export * from "./medicine";
 export * from "./permissions";
 export * from "./productCapabilities";
