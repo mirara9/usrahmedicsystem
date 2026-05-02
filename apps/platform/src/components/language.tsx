@@ -2,7 +2,7 @@
 
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import { CalendarCheck, Globe2, Home, Phone } from "lucide-react";
+import { CalendarCheck, Globe2, Phone } from "lucide-react";
 
 export type LanguageCode = "en" | "ms" | "zh" | "ta";
 
@@ -95,12 +95,26 @@ export function LocalizedPublicNav({ active }: PublicNavProps) {
   const { language } = useLanguage();
   const copy = sharedCopy[language];
 
+  const menuLinks = [
+    { href: "/", label: copy.home, isActive: active === "home" },
+    { href: "/#promosi", label: "Promosi" },
+    { href: "/#tentang", label: "Siapa Kami" },
+    { href: "/#panel", label: "Panel" },
+    { href: "/#doktor", label: "Profil Doktor" },
+    { href: "/#info-kesihatan", label: "Info Kesihatan" },
+    { href: "/#perkhidmatan", label: "Perkhidmatan" },
+    { href: "/#rangkaian", label: "Rangkaian Kami" },
+    { href: "/#sertai-kami", label: "Sertai Kami" },
+    { href: "/#kerjaya", label: "Kerjaya" }
+  ];
+
   return (
-    <nav className="surface-nav" aria-label={copy.navAria}>
-      <Link className={active === "home" ? "active" : ""} href="/">
-        <Home size={16} aria-hidden="true" />
-        {copy.home}
-      </Link>
+    <nav className="surface-nav public-nav-modern" aria-label={copy.navAria}>
+      {menuLinks.map((item) => (
+        <Link className={item.isActive ? "active" : ""} href={item.href} key={item.href}>
+          {item.label}
+        </Link>
+      ))}
       <Link className={active === "booking" ? "active" : ""} href="/patient">
         <CalendarCheck size={16} aria-hidden="true" />
         {copy.bookAppointment}

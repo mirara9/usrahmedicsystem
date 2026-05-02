@@ -33,7 +33,7 @@ type ApiResult = ApiSuccess | ApiFallback | ApiFailure;
 type ActionPayload = Record<string, unknown>;
 
 const endpointLabels: Record<PanelKind, string> = {
-  admin: "/api/appointments",
+  admin: "/api/admin/registrations",
   medicine: "/api/stock/receive",
   insight: "/api/owner/export",
   patient: "/api/appointments",

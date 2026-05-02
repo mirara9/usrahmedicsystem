@@ -1,5 +1,9 @@
 # UsrahMedic Platform
 
+Execution note:
+- `plan.md` is the master execution sequence until implementation begins.
+- This README summarizes the current repo state and target direction, but should not override the implementation order defined in `plan.md`.
+
 Cloudflare-ready implementation foundation for the UsrahMedic clinic management platform.
 
 ## What Exists
@@ -20,20 +24,25 @@ npm run dev
 
 Open `http://localhost:3000`.
 
-## Cloudflare Target
+## Cloudflare Foundation Target
 
-Live deployment:
+Current foundation deployment:
 
-- `https://usrahmedic-platform.pages.dev`
+- `https://usrahmedic-cms.pages.dev`
 
 ```powershell
 npm run build:cloudflare
 npm run preview:cloudflare
 ```
 
-Production deployment uses Cloudflare Pages with `apps/platform/out` as the build output and Pages Functions under `functions/` for `/api/*` routes. D1 migrations live under `migrations/`.
+This section describes the **current Cloudflare foundation deployment only**.
+It is useful for preview, prototype, and transition environments.
+It is **not** the final canonical production data architecture for Usrah Medic's live clinic records.
+The public production domain cutover to `usrahmedic.com` happens later, after the new platform is ready.
 
-After creating the real D1 database and updating `wrangler.toml` with the Cloudflare-provided IDs:
+The current foundation deployment uses Cloudflare Pages with `apps/platform/out` as the build output and Pages Functions under `functions/` for `/api/*` routes. D1 migrations live under `migrations/`.
+
+After creating the real foundation D1 database and updating `wrangler.toml` with the Cloudflare-provided IDs:
 
 ```powershell
 npm run db:migrate:remote
@@ -68,6 +77,12 @@ npm run build
 
 This is not yet the final clinic management system. It is the first executable Cloudflare foundation.
 
+For the target deployment now in scope — **Usrah Medic, currently 3 branches and growing** — the production architecture is:
+- Cloudflare for frontend hosting, previews, WAF, bot protection, and edge orchestration.
+- A lower-cost managed PostgreSQL provider for canonical production PHI, financial records, inventory, and audit data.
+- Cloudflare R2 for documents, reporting snapshots, exports, and backup bundles.
+- D1 remains a foundation and transition layer, not the final canonical production data store.
+
 Production provider decisions are now selected:
 
 - Staff auth/MFA: Microsoft Entra ID with Microsoft Authenticator.
@@ -75,15 +90,15 @@ Production provider decisions are now selected:
 - LHDN e-Invoicing: direct MyInvois API.
 - Panel/TPA: MiCare first adapter, then PMCare and HealthMetrics by contract.
 - SMS/email: Twilio SMS and Twilio SendGrid Email API.
-- Malaysia data platform: AWS `ap-southeast-5` Aurora/RDS PostgreSQL and S3.
+- Malaysia data platform: managed PostgreSQL + Cloudflare R2.
 - Support/onboarding: Freshdesk.
-- CI/CD and monitoring: GitHub Actions, Cloudflare Pages, Sentry, and AWS backup controls.
+- CI/CD and monitoring: GitHub Actions, Cloudflare Pages, Sentry, and backup controls for the chosen managed database + R2 stack.
 
 Production still needs the actual credentials, contracts, policies, and implementation work:
 
 - Microsoft Entra tenant/app registration, BFF sessions, staff account mapping, and MFA enforcement.
-- AWS Malaysia PostgreSQL/S3 provisioning, migration from D1 foundation storage, and audit hardening.
+- Managed PostgreSQL provisioning, R2 storage policy, migration from D1 foundation storage, and audit hardening.
 - Billplz, MyInvois, panel/TPA, SMS/email, lab/radiology, and accounting integrations.
-- Legal review for PDPA, CKAPS, MAB, OHS, prescribing, and dispensing workflows.
+- Legal review for PDPA, CKAPS, MMC, MAB, OHS, prescribing, and dispensing workflows.
 - Migration of real branch, panel, patient, service, price, and stock data.
 - Security testing, backup/DR drills, and pilot branch rollout.

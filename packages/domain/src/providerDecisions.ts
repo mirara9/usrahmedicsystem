@@ -188,35 +188,35 @@ export const providerDecisions = [
     ]
   },
   {
-    id: "data-aws-malaysia-postgres-s3",
+    id: "data-managed-postgres-r2",
     category: "data",
-    title: "Malaysian-hosted production data platform",
-    provider: "AWS Asia Pacific (Malaysia) Region, Aurora/RDS PostgreSQL, and S3",
+    title: "Canonical production data platform",
+    provider: "Managed PostgreSQL provider and Cloudflare R2",
     status: "selectedRequiresCredentials",
     decision:
-      "Use AWS ap-southeast-5 as the Malaysia production data region, with Aurora PostgreSQL or RDS PostgreSQL as the canonical PHI/financial write model and S3 in the same region for documents.",
+      "Use a lower-cost managed PostgreSQL provider as the canonical PHI/financial write model and Cloudflare R2 for documents, exports, invoice PDFs, and backup bundles.",
     rationale: [
-      "AWS lists Asia Pacific (Malaysia), ap-southeast-5, for Aurora PostgreSQL/RDS endpoints.",
-      "AWS S3 also has a Malaysia regional endpoint, allowing documents and backups to stay in the same country target.",
-      "PostgreSQL is a better fit than D1 for transaction integrity, reporting joins, audit volume, and future healthcare integrations."
+      "PostgreSQL is a better fit than D1 for transaction integrity, reporting joins, audit volume, and healthcare growth requirements.",
+      "A managed PostgreSQL provider keeps costs lower than an AWS-heavy starting point while preserving a serious canonical data platform.",
+      "Cloudflare R2 keeps object storage aligned with the Cloudflare-first delivery layer and avoids a separate AWS S3 footprint."
     ],
     implementationNotes: [
-      "Keep Cloudflare Pages for web delivery but move production PHI/financial writes to Malaysia-hosted PostgreSQL.",
-      "Use D1 only for non-PHI edge foundation data unless the owner explicitly accepts its residency profile.",
-      "Enable encryption at rest, PITR/backups, read replicas or DR plan, audit retention, and least-privilege database roles.",
-      "Store scans, signed PDFs, invoices, exports, and attachments in S3 buckets scoped by environment and branch policy."
+      "Keep Cloudflare Pages for web delivery but move production PHI and financial writes to managed PostgreSQL.",
+      "Use D1 only for foundation, preview, or low-risk edge-side support data during the transition.",
+      "Enable encryption at rest, backups, restore drills, audit retention, and least-privilege database roles on the chosen provider.",
+      "Store scans, signed PDFs, invoices, exports, and attachments in R2 buckets scoped by environment and branch policy."
     ],
     requiredConfiguration: [
       "DATABASE_URL",
-      "DATABASE_REGION",
-      "AWS_REGION",
-      "AWS_ACCESS_KEY_ID",
-      "AWS_SECRET_ACCESS_KEY",
-      "AWS_S3_DOCUMENT_BUCKET",
-      "AWS_KMS_KEY_ID"
+      "DATABASE_PROVIDER",
+      "DATABASE_REGION_OR_HOSTING_NOTE",
+      "R2_ACCOUNT_ID",
+      "R2_ACCESS_KEY_ID",
+      "R2_SECRET_ACCESS_KEY",
+      "R2_DOCUMENT_BUCKET"
     ],
     complianceNotes: [
-      "Complete PDPA vendor register, cross-border review for Cloudflare/communications providers, and backup restore evidence.",
+      "Complete PDPA vendor register, cross-border review if the chosen provider is outside Malaysia, and backup restore evidence.",
       "Run migration rehearsal before any real patient data import."
     ]
   },
@@ -255,10 +255,10 @@ export const providerDecisions = [
     id: "ops-github-cloudflare-sentry",
     category: "ops",
     title: "CI/CD, deployments, monitoring, and error tracking",
-    provider: "GitHub Actions, Cloudflare Pages, Sentry, AWS backup controls",
+    provider: "GitHub Actions, Cloudflare Pages, Sentry, database backup controls",
     status: "selectedRequiresCredentials",
     decision:
-      "Use GitHub Actions for checks and protected promotion, Cloudflare Pages for web deployment, Sentry for application errors, and AWS backup/PITR controls for production data.",
+      "Use GitHub Actions for checks and protected promotion, Cloudflare Pages for web deployment, Sentry for application errors, and provider-native backup/PITR controls for the chosen canonical data platform.",
     rationale: [
       "The project already deploys to Cloudflare Pages and builds cleanly with npm scripts.",
       "GitHub Actions is the shortest path to enforce lint, test, typecheck, build, and migration checks before release.",
@@ -293,7 +293,7 @@ export const requiredProviderDecisionIds = [
   "tax-lhdn-myinvois-direct",
   "panel-tpa-micare-first",
   "communications-twilio-sendgrid",
-  "data-aws-malaysia-postgres-s3",
+  "data-managed-postgres-r2",
   "support-freshdesk",
   "ops-github-cloudflare-sentry"
 ] as const satisfies readonly ProviderDecisionId[];

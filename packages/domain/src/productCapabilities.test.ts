@@ -37,7 +37,7 @@ describe("product capability map", () => {
 
   it("identifies external decisions that code alone cannot complete", () => {
     expect(getCapabilityById("auth-mfa-staff-accounts" as ProductCapabilityId).providerDependencies.join(" ")).toMatch(/Microsoft Authenticator/);
-    expect(getCapabilityById("malaysian-hosted-database" as ProductCapabilityId).currentStatus).toBe("providerDependent");
+    expect(getCapabilityById("canonical-production-database" as ProductCapabilityId).currentStatus).toBe("providerDependent");
     expect(getCapabilityById("billing-invoices-panels-myinvois-payments" as ProductCapabilityId).currentStatus).toBe("providerDependent");
     expect(getCapabilityById("billing-invoices-panels-myinvois-payments" as ProductCapabilityId).providerDependencies.join(" ")).toMatch(/Billplz|MyInvois|MiCare/);
   });

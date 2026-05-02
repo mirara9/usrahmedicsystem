@@ -1699,3 +1699,341 @@ html[lang="zh-Hans"] .patient-hero h1 {
     width: 148px;
   }
 }
+
+.public-page {
+  display: grid;
+  gap: 88px;
+}
+
+.public-nav-modern {
+  align-items: flex-start;
+}
+
+.marketing-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(320px, 0.95fr);
+  gap: clamp(28px, 5vw, 56px);
+  align-items: center;
+  min-height: 620px;
+}
+
+.marketing-hero-copy {
+  display: grid;
+  gap: 18px;
+}
+
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  width: fit-content;
+  min-height: 38px;
+  padding: 0 14px;
+  border-radius: 999px;
+  background: rgba(236, 19, 127, 0.1);
+  color: var(--brand-pink-dark);
+  font-size: 0.86rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.marketing-hero-copy h1 {
+  margin: 0;
+  font-size: clamp(2.4rem, 5vw, 4.8rem);
+  line-height: 0.95;
+}
+
+.marketing-hero-copy p {
+  max-width: 720px;
+  margin: 0;
+  color: var(--muted);
+  font-size: 1.06rem;
+  line-height: 1.7;
+}
+
+.marketing-hero-media {
+  position: relative;
+}
+
+.marketing-hero-media img {
+  display: block;
+  width: 100%;
+  min-height: 540px;
+  object-fit: cover;
+  border-radius: 28px;
+  box-shadow: 0 30px 80px rgba(30, 42, 47, 0.16);
+}
+
+.hero-mini-cards {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.mini-card {
+  display: grid;
+  gap: 6px;
+  padding: 18px;
+  border: 1px solid rgba(0, 139, 131, 0.14);
+  border-radius: 18px;
+  background: linear-gradient(180deg, #ffffff 0%, #f8fffe 100%);
+}
+
+.mini-card strong {
+  color: var(--brand-pink-dark);
+  font-size: 1rem;
+}
+
+.mini-card span {
+  color: var(--muted);
+  font-size: 0.92rem;
+  line-height: 1.5;
+}
+
+.left-aligned {
+  justify-content: space-between;
+  align-items: end;
+}
+
+.promo-strip {
+  padding: 34px;
+  border-radius: 30px;
+  background: linear-gradient(180deg, rgba(236, 19, 127, 0.05), rgba(49, 198, 197, 0.05));
+}
+
+.promo-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.promo-card,
+.route-card,
+.reason-card,
+.branch-card-modern,
+.doctor-visual-card,
+.panel-visual-card {
+  padding: 22px;
+  border-radius: 22px;
+  background: #ffffff;
+  border: 1px solid rgba(30, 42, 47, 0.06);
+  box-shadow: 0 18px 46px rgba(30, 42, 47, 0.08);
+}
+
+.promo-pill,
+.route-chip,
+.service-chip {
+  display: inline-flex;
+  align-items: center;
+  width: fit-content;
+  min-height: 34px;
+  padding: 0 12px;
+  border-radius: 999px;
+  background: rgba(49, 198, 197, 0.12);
+  color: var(--brand-teal);
+  font-size: 0.82rem;
+  font-weight: 800;
+}
+
+.promo-card h3,
+.route-card h3,
+.doctor-visual-card h3,
+.service-card-body h3 {
+  margin: 14px 0 8px;
+  font-size: 1.15rem;
+}
+
+.promo-card p,
+.route-card p,
+.reason-card p,
+.doctor-visual-card p,
+.service-card-body p {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+.service-grid-modern {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.service-card-modern {
+  overflow: hidden;
+  border-radius: 24px;
+  background: #ffffff;
+  border: 1px solid rgba(30, 42, 47, 0.06);
+  box-shadow: 0 18px 46px rgba(30, 42, 47, 0.08);
+}
+
+.service-card-modern img {
+  display: block;
+  width: 100%;
+  height: 250px;
+  object-fit: cover;
+}
+
+.service-card-body {
+  display: grid;
+  gap: 10px;
+  padding: 18px;
+}
+
+.service-link {
+  color: var(--brand-pink);
+  font-weight: 800;
+}
+
+.reasons-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(320px, 0.9fr);
+  gap: 22px;
+}
+
+.reasons-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.reason-card {
+  display: grid;
+  grid-template-columns: 16px 1fr;
+  gap: 12px;
+  align-items: start;
+}
+
+.reason-dot {
+  width: 12px;
+  height: 12px;
+  margin-top: 8px;
+  border-radius: 999px;
+  background: linear-gradient(180deg, var(--brand-pink), var(--accent));
+}
+
+.doctor-visual-card {
+  display: grid;
+  gap: 16px;
+}
+
+.doctor-visual-card img,
+.panel-visual-card img {
+  display: block;
+  width: 100%;
+  border-radius: 18px;
+}
+
+.branches-section .card h3 {
+  margin: 12px 0 8px;
+}
+
+.panel-showcase {
+  padding: 34px;
+  border-radius: 30px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 1), rgba(236, 19, 127, 0.04));
+}
+
+.route-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.modern-footer {
+  margin-top: 40px;
+  background: #fff7fb;
+  border-top: 1px solid rgba(236, 19, 127, 0.08);
+}
+
+.modern-footer-grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 24px;
+  padding: 48px clamp(18px, 4vw, 56px);
+}
+
+.modern-footer h3 {
+  margin: 0 0 14px;
+  color: var(--brand-pink-dark);
+  font-size: 1rem;
+}
+
+.modern-footer p,
+.modern-footer li,
+.modern-footer a {
+  color: var(--muted);
+  line-height: 1.7;
+}
+
+.modern-footer ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.footer-bottom {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 24px;
+  justify-content: space-between;
+  padding: 18px clamp(18px, 4vw, 56px);
+  background: var(--brand-pink);
+  color: #ffffff;
+  font-size: 0.9rem;
+}
+
+.floating-whatsapp {
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
+  z-index: 30;
+  display: inline-flex;
+  align-items: center;
+  min-height: 52px;
+  padding: 0 18px;
+  border-radius: 999px;
+  background: #10b981;
+  color: #ffffff;
+  font-weight: 800;
+  box-shadow: 0 18px 40px rgba(16, 185, 129, 0.35);
+}
+
+@media (max-width: 980px) {
+  .marketing-hero,
+  .reasons-layout,
+  .route-grid,
+  .modern-footer-grid,
+  .promo-grid,
+  .service-grid-modern,
+  .hero-mini-cards {
+    grid-template-columns: 1fr;
+  }
+
+  .marketing-hero {
+    min-height: auto;
+  }
+}
+
+@media (max-width: 700px) {
+  .public-page {
+    gap: 56px;
+  }
+
+  .promo-strip,
+  .panel-showcase {
+    padding: 22px;
+  }
+
+  .reasons-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .surface-nav.public-nav-modern {
+    justify-content: flex-start;
+  }
+
+  .modern-footer-grid {
+    grid-template-columns: 1fr;
+  }
+}

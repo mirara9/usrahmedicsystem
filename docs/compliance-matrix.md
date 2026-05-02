@@ -2,6 +2,10 @@
 
 This matrix is implementation guidance, not legal advice. A Malaysia healthcare lawyer and clinic compliance lead must review production workflows.
 
+Implementation sequencing note:
+- `plan.md` is the master execution sequence for implementation readiness and pilot-core delivery.
+- This matrix defines controls that must be translated into build tasks and go-live gates.
+
 ## PDPA
 
 - Maintain versioned privacy notices.
@@ -10,6 +14,7 @@ This matrix is implementation guidance, not legal advice. A Malaysia healthcare 
 - Assess DPO threshold and register through SPDP when required.
 - Run a 72-hour data breach notification workflow with evidence capture and affected-subject decisioning.
 - Keep processor/vendor register and cross-border transfer basis.
+- Require vendor-by-vendor data-flow review before PHI-adjacent workflows are enabled.
 
 ## CKAPS / Private Clinic Governance
 
@@ -41,3 +46,11 @@ This matrix is implementation guidance, not legal advice. A Malaysia healthcare 
 - Legal registers are separate from audit logs: prescription book, psychotropic register, dangerous-drug register or explicit v1 exclusion, stock ledger, correction ledger.
 - Dispensing flow: prescribed, screened, clarified, prepared, labelled, checked, counter-checked, issued, counselled, reversed or voided.
 - Batch traceability must cover purchase, receive, transfer, dispense, return, quarantine, disposal, and recall.
+
+## Retention / Lifecycle Baseline
+
+- Medical records: no hard delete; archive and correction controls only.
+- Billing/payment and e-invoicing records: retain under finance/tax policy with immutable audit linkage.
+- Audit logs: retain long enough for complaint, access review, and incident investigation needs.
+- Consent/privacy records: retain versioned evidence according to relationship and audit requirements.
+- Exact durations require legal/compliance sign-off before production go-live.

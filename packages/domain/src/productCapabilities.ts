@@ -75,7 +75,7 @@ export const productCapabilities = [
       "Support corrections without hard delete.",
       "Add duplicate matching and patient merge governance."
     ],
-    providerDependencies: ["AWS S3 ap-southeast-5 object storage for attachments and reports"],
+    providerDependencies: ["Cloudflare R2 object storage for attachments and reports"],
     complianceDependencies: ["MMC no-delete medical record controls", "PDPA access/correction/export workflows"],
     phase: "phase-2"
   },
@@ -109,7 +109,7 @@ export const productCapabilities = [
       "Generate MC with doctor identity, branch, patient, date range, restrictions, serial number, QR/verification, and reprint audit.",
       "Create document templates for referral letters, consent forms, and patient reports."
     ],
-    providerDependencies: ["PDF/document rendering service or library", "AWS S3 ap-southeast-5 secure object storage"],
+    providerDependencies: ["PDF/document rendering service or library", "Cloudflare R2 secure object storage"],
     complianceDependencies: ["MMC documentation standards", "Clinic legal review for MC wording"],
     phase: "phase-2"
   },
@@ -184,19 +184,19 @@ export const productCapabilities = [
     phase: "phase-2"
   },
   {
-    id: "malaysian-hosted-database",
+    id: "canonical-production-database",
     category: "platform",
-    title: "Malaysian-hosted production database",
+    title: "Canonical production database and object storage",
     currentStatus: "providerDependent",
-    foundationEvidence: ["Cloudflare D1 foundation database is configured, but Malaysia data residency is not guaranteed."],
+    foundationEvidence: ["Cloudflare D1 foundation database is configured, but it is not the intended final canonical production store for live clinic data."],
     productionNeeded: [
-      "Provision AWS ap-southeast-5 Aurora PostgreSQL or RDS PostgreSQL for production PHI and financial records.",
-      "Document backup, restore, encryption, monitoring, DR, data processing agreements, and cross-border transfer basis.",
+      "Provision a lower-cost managed PostgreSQL provider for production PHI, billing, inventory, and audit data.",
+      "Define backup, restore, encryption, monitoring, DR, data processing agreements, and cross-border transfer basis.",
       "Migrate the canonical write model from D1 foundation tables to PostgreSQL before real PHI go-live.",
-      "Keep D1 only for non-PHI edge foundation data unless residency and durability requirements are approved."
+      "Use Cloudflare R2 for documents, exports, scans, and backup bundles tied to canonical metadata."
     ],
-    providerDependencies: ["AWS ap-southeast-5 PostgreSQL", "AWS S3 ap-southeast-5 document/backup storage", "Sentry and AWS backup monitoring"],
-    complianceDependencies: ["PDPA cross-border transfer assessment", "Clinic risk acceptance"],
+    providerDependencies: ["Managed PostgreSQL provider", "Cloudflare R2", "Sentry and provider-native backup monitoring"],
+    complianceDependencies: ["PDPA cross-border transfer assessment if provider is outside Malaysia", "Clinic risk acceptance"],
     phase: "phase-1"
   },
   {
@@ -210,7 +210,7 @@ export const productCapabilities = [
       "Implement environment management, secrets rotation, rollback, monitoring, uptime checks, error tracking, audit log retention, backup, and DR drills.",
       "Define release notes and clinic downtime/maintenance communication process."
     ],
-    providerDependencies: ["GitHub Actions", "Cloudflare Pages", "Sentry", "AWS backup storage"],
+    providerDependencies: ["GitHub Actions", "Cloudflare Pages", "Sentry", "provider-native backup storage or backup bundle policy"],
     complianceDependencies: ["Change management evidence", "Security incident response process"],
     phase: "phase-1"
   },
@@ -243,7 +243,7 @@ export const requiredProductionCapabilityIds = [
   "inventory-upload-adjust-dispense-labels",
   "reporting-real-data",
   "multi-branch-shared-doctors",
-  "malaysian-hosted-database",
+  "canonical-production-database",
   "cloud-updates-devops",
   "support-onboarding"
 ] as const satisfies readonly ProductCapabilityId[];

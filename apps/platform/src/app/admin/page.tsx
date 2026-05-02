@@ -84,7 +84,7 @@ export default function AdminPage() {
         <div className="panel">
           <h2>Registration action</h2>
           <p>Submits through the Cloudflare API path first, then falls back locally when the endpoint is not deployed.</p>
-          <CloudflareReadiness endpoint="/api/admin/registrations" note="Expected to persist registration, queue handoff, and audit correlation once backend wiring lands." />
+          <CloudflareReadiness endpoint="/api/admin/registrations" note="Creates patient registration, appointment check-in, queue handoff, visit opening, and audit correlation through Pages Functions." />
           <AdminRegistrationAction />
         </div>
 

@@ -31,10 +31,10 @@ describe("provider decisions", () => {
     }
   });
 
-  it("uses Malaysia-first production providers for payments, tax, TPA, and data", () => {
+  it("uses the selected production providers for payments, tax, TPA, and canonical data", () => {
     expect(getProviderDecisionById("payments-billplz").provider).toBe("Billplz");
     expect(getProviderDecisionById("tax-lhdn-myinvois-direct").provider).toBe("LHDN MyInvois API");
     expect(getProviderDecisionById("panel-tpa-micare-first").provider).toMatch(/MiCare/);
-    expect(getProviderDecisionById("data-aws-malaysia-postgres-s3").decision).toMatch(/ap-southeast-5/);
+    expect(getProviderDecisionById("data-managed-postgres-r2").provider).toMatch(/Managed PostgreSQL provider and Cloudflare R2/);
   });
 });

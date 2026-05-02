@@ -2,6 +2,10 @@
 
 This plan is the working feature matrix for moving UsrahMedic from the current Cloudflare-ready foundation into a production clinic management system. It is implementation guidance, not a legal, tax, or medical compliance sign-off.
 
+Execution note:
+- `plan.md` is the master implementation sequence.
+- This capability matrix must stay aligned to the same Pilot Core / Commercial Launch / Later boundaries.
+
 ## Status Legend
 
 - `Foundation only`: architecture, docs, sample data, or deployment shell exists, but the workflow is not production-usable.
@@ -16,16 +20,16 @@ These are the implementation defaults unless the owner explicitly changes them l
 
 | Area | Selected provider | Notes |
 |---|---|---|
-| Staff auth and MFA | Microsoft Entra ID + Microsoft Authenticator | Match the admin.caricite.com-style Microsoft sign-in experience; require Authenticator MFA/passkey/Conditional Access for staff. |
+| Staff auth and MFA | Microsoft Entra ID + Microsoft Authenticator | Current default for staff auth unless the owner explicitly approves a lower-overhead alternative before implementation begins. |
 | Payment gateway | Billplz | Primary gateway for RM10 booking deposits, payment links, webhooks, refunds, and reconciliation. |
 | LHDN e-Invoicing | Direct LHDN MyInvois API | Use official API states for TIN validation, signed document submission, cancellation/rejection, lookup, QR/UUID storage, and reconciliation. |
 | Panel/TPA | MiCare first adapter; PMCare and HealthMetrics next by contract | Keep the billing model multi-adapter because different employers and panels use different TPAs. |
 | SMS | Twilio SMS | Transactional reminders only; Malaysia SMS content must follow Twilio/MCMC restrictions, including no PHI, required free-message header, brand name, and no URLs/personal-data requests. |
 | Email | Twilio SendGrid Email API | Transactional email for booking, receipt, onboarding, and support messages with authenticated sender domains. |
-| Malaysian-hosted database | AWS ap-southeast-5 Aurora/RDS PostgreSQL | Canonical PHI and financial write model; Cloudflare D1 remains a foundation/edge store until migration. |
-| Object storage | AWS S3 ap-southeast-5 | Documents, scans, signed PDFs, invoices, exports, and backups stay in the Malaysia target region. |
+| Malaysian-hosted database | Managed PostgreSQL provider (non-AWS) | Canonical PHI and financial write model. If a fully Malaysia-hosted option is not chosen, cross-border and residency implications must be reviewed before go-live. Cloudflare D1 remains a foundation/edge store until migration. |
+| Object storage | Cloudflare R2 | Documents, scans, signed PDFs, invoices, exports, and backups. |
 | Support/onboarding | Freshdesk | Standard and priority support queues, SLA policies, knowledge base, onboarding tickets, and escalation routing. |
-| CI/CD and monitoring | GitHub Actions, Cloudflare Pages, Sentry, AWS backup controls | Enforce checks before production promotion, deploy web surfaces, monitor errors, and prove backup restore. |
+| CI/CD and monitoring | GitHub Actions, Cloudflare Pages, Sentry, backup controls | Enforce checks before production promotion, deploy web surfaces, monitor errors, and prove backup restore. |
 
 ## Capability Matrix
 
@@ -36,7 +40,7 @@ These are the implementation defaults unless the owner explicitly changes them l
 | Branch level data isolation | Partially implemented | Branch IDs exist in seeded data and workflow contracts. | Branch-scoped queries, API authorization, audit proof for cross-branch access, owner-level PHI-safe aggregation. | CKAPS branch governance, PDPA least-privilege sign-off. |
 | Shared doctor accounts across branches | Partially implemented | Doctor role exists; branch data exists. | Doctor profile, APC/credential evidence, branch assignment, locum schedule, cross-branch roster, branch-safe patient access. | Doctor credential/locum policy and branch manager approval workflow. |
 | Patient registration and intake | Partially implemented | Booking/intake contracts and patient booking UI exist. | Patient registry UI/API, duplicate detection, dependent/guardian model, ID vault tokenization, consent history, intake triage handoff. | Identity storage approach and PDPA consent wording. |
-| Patient records management | Partially implemented | Patient table and domain registration contract exist. | Canonical patient profile, immutable timeline, attachments, alerts, allergies, corrections ledger, merge governance, access/export workflow. | AWS S3 ap-southeast-5 object storage, legal review of medical record retention. |
+| Patient records management | Partially implemented | Patient table and domain registration contract exist. | Canonical patient profile, immutable timeline, attachments, alerts, allergies, corrections ledger, merge governance, access/export workflow. | Cloudflare R2 object storage policy, legal review of medical record retention. |
 | Medical history and visit records | Not implemented | Encounter permissions exist only as foundation. | Visit timeline, diagnosis, procedures, prescriptions, orders/results, referrals, follow-ups, corrections, print/export audit. | MMC medical record policy and clinic SOP. |
 | Consultations management | Not implemented | Workflow states include consult states; no production consultation module exists. | Doctor workbench, SOAP notes, orders, prescription, disposition, follow-up, referral, billing handoff, audit events. | Clinical template approval and doctor sign-off. |
 | Rich text document editor | Not implemented | No editor exists. | Secure clinical editor with templates, autosave, versioning, corrections, print/export, PDF generation, locked final documents. | PDF/document rendering choice and storage provider. |
@@ -54,10 +58,10 @@ These are the implementation defaults unless the owner explicitly changes them l
 | Dispensing and medicine label printing | Partially implemented | Dispense states and label foundation concepts exist. | Prescription-linked screening, clarify/prepare/label/check/counter-check/issue/counsel/reverse; printable label templates and print audit. | Label printer/browser print strategy and legal label content review. |
 | Basic clinic reports | Partially implemented | Owner KPI sample and PHI-safe export contract exist. | Daily registration, appointment, queue, consultation, cash drawer, staff productivity, medicine expiry, stock movement reports. | Report definitions from owner/branch managers, SendGrid for scheduled delivery. |
 | Revenue and billing reports | Partially implemented | PHI-safe export pattern exists, but no real billing ledger exists. | Revenue, collections, refunds, AR aging, panel claims, doctor performance, branch comparison, exports, scheduled delivery. | Accounting/export target, finance definitions, SendGrid scheduled delivery. |
-| Cloud-based clinic system | Foundation only | Cloudflare Pages, Functions, D1, and deployment docs exist. | Production environments, secrets, CI/CD, PostgreSQL migrations, monitoring, uptime checks, backup, DR, rollback, incident response. | GitHub Actions, Cloudflare Pages, Sentry, AWS backup controls, production ownership. |
+| Cloud-based clinic system | Foundation only | Cloudflare Pages, Functions, D1, and deployment docs exist. | Production environments, secrets, CI/CD, PostgreSQL migrations, monitoring, uptime checks, backup, DR, rollback, incident response. | GitHub Actions, Cloudflare Pages, Sentry, backup controls, production ownership. |
 | Automatic system updates | Foundation only | Deployment scripts exist, but no protected release process exists. | Protected branch, preview deploys, tests before release, migration checks, feature flags, release notes, rollback and maintenance notices. | GitHub Actions access and release approval policy. |
 | Ongoing platform improvements | Foundation only | Rollout docs exist. | Changelog, feature request intake, roadmap triage, staged rollout, post-release QA, product analytics without PHI leakage. | Product ownership process. |
-| Malaysian-hosted database | Provider dependent | Current database target is Cloudflare D1; AWS Malaysia PostgreSQL/S3 decision is selected. | Provision AWS ap-southeast-5 Aurora/RDS PostgreSQL, define backup/restore/encryption/DR, migrate PHI write model, keep D1 only for non-PHI edge foundation data. | AWS account/region access, PDPA cross-border transfer assessment for non-AWS vendors, clinic risk acceptance. |
+| Canonical production database | Provider dependent | Current database target is Cloudflare D1; a lower-cost managed PostgreSQL decision is now selected. | Provision managed PostgreSQL, define backup/restore/encryption/DR, migrate PHI write model, keep D1 only for non-PHI edge foundation data. | Provider account access, PDPA cross-border transfer assessment if the chosen provider is outside Malaysia, clinic risk acceptance. |
 | Standard support | Partially implemented | Support ticket API and foundation workflow exist; Freshdesk provider decision is selected. | Freshdesk intake, ticket categories, SLA, clinic contacts, knowledge base, remote support access policy. | Freshdesk account, support staffing, vendor processor terms. |
 | Priority support | Partially implemented | Support ticket API and escalation fields exist; Freshdesk provider decision is selected. | Severity definitions, escalation, after-hours coverage, incident comms, status page, RCA workflow. | Support staffing and status page provider. |
 | Assisted onboarding | Partially implemented | Onboarding task API exists and rollout plan has discovery/go-live criteria. | Freshdesk/onboarding queue, branch setup checklist, data import, staff setup, panel setup, stock opening balance, printer setup, training, sign-off. | Clinic data owners and branch availability. |
@@ -66,8 +70,8 @@ These are the implementation defaults unless the owner explicitly changes them l
 
 ### Phase 1 - Production Foundation
 
-1. Provision AWS ap-southeast-5 PostgreSQL/S3 and define the target write model.
-2. Implement Microsoft Entra ID, Microsoft Authenticator MFA, staff accounts, RBAC enforcement, branch assignments, audit hardening, CI/CD, monitoring, backup, and release process.
+1. Provision the chosen managed PostgreSQL provider and R2 storage policy, then define the target write model.
+2. Implement Microsoft Entra ID or the approved lower-overhead staff auth path, plus RBAC enforcement, branch assignments, audit hardening, CI/CD, monitoring, backup, and release process.
 3. Configure Billplz, LHDN MyInvois sandbox, Twilio SMS, SendGrid email, Freshdesk, and Sentry credentials in non-production first.
 
 Exit criteria:
@@ -76,22 +80,23 @@ Exit criteria:
 - Every staff action has a session, actor, branch scope, and audit trail.
 - Database, backup, and deployment decisions are documented and tested.
 
-### Phase 2 - Clinic Operations
+### Phase 2 - Pilot Core Operations
 
-1. Build patient registry, intake, guardian/dependent model, appointment scheduling, queue, triage, consultation, visit timeline, and medical record correction workflow.
-2. Build doctor roster and shared doctor accounts across branches.
-3. Pilot one branch with paper/spreadsheet fallback.
+1. Build patient registry, intake, appointment scheduling, queue, triage, consultation basics, visit timeline, medical record correction workflow, billing/payments, dispensing basics, and core document output needed for the first branch pilot.
+2. Add guardian/dependent workflow here if the chosen pilot branch routinely handles minors/dependents.
+3. Build doctor roster and shared doctor accounts across branches as required for the pilot.
+4. Pilot one branch with paper/spreadsheet fallback.
 
 Exit criteria:
 
-- One branch can complete registration to consultation to discharge using the system.
+- One branch can complete registration to consultation to dispensing/payment discharge using the system.
 - Patient records cannot be hard-deleted.
 - Cross-branch access is blocked unless assignment or break-glass rules allow it.
 
-### Phase 3 - Revenue And Medicine
+### Phase 3 - Commercial Launch Expansion
 
-1. Implement billing, editable invoices, receipts, cash drawer, deposits, refunds, panels, claims, MyInvois, and reconciliation.
-2. Implement medicine master, stock upload, opening balance, adjustments, stocktake, dispensing, legal registers, and label printing.
+1. Expand billing depth, editable invoices, deposits, refunds, panels, claims, MyInvois, and reconciliation beyond Pilot Core.
+2. Expand medicine master, stock upload, opening balance, adjustments, stocktake, dispensing controls, legal registers, and label printing beyond the pilot basics.
 
 Exit criteria:
 
@@ -124,7 +129,7 @@ Exit criteria:
 These providers are selected, but go-live still needs credentials, contracts, sandbox validation, and policy approval:
 
 - Microsoft Entra ID app registration, Microsoft Authenticator policy, Conditional Access, recovery policy, and branded sign-in.
-- AWS ap-southeast-5 PostgreSQL/S3 provisioning, backup/restore evidence, encryption keys, and migration rehearsal.
+- Managed PostgreSQL provider provisioning, backup/restore evidence, encryption keys or managed secret policy, and migration rehearsal.
 - Billplz merchant account, collection ID, webhook signature keys, settlement bank process, refund/cancel policy, and reconciliation.
 - LHDN MyInvois sandbox and production credentials, signing/certificate setup, taxpayer profile, document mapping, and tax advisor sign-off.
 - MiCare TPA adapter first, then PMCare, HealthMetrics, AIA, CompuMed, and other payer adapters where signed contracts/API access or portal workflows exist.
@@ -146,8 +151,8 @@ These providers are selected, but go-live still needs credentials, contracts, sa
 - Microsoft Authenticator supports Microsoft Entra MFA, notifications, verification codes, passwordless, and passkey sign-in: https://learn.microsoft.com/en-us/entra/identity/authentication/concept-authentication-authenticator-app
 - Billplz documents REST API, webhooks, FPX pricing, and payment gateway operations for Malaysian businesses: https://main.billplz.com/
 - LHDN MyInvois SDK documents taxpayer TIN validation, document submission, cancellation/rejection, lookup, and search APIs: https://sdk.myinvois.hasil.gov.my/einvoicingapi/
-- AWS lists Aurora PostgreSQL/RDS in Asia Pacific (Malaysia), `ap-southeast-5`: https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/Concepts.RegionsAndAvailabilityZones.html
-- AWS lists S3 Malaysia region endpoints for `ap-southeast-5`: https://docs.aws.amazon.com/general/latest/gr/s3.html
+- Managed PostgreSQL providers with regional or near-region hosting should be compared on latency, backup/restore, operational simplicity, and cross-border implications relative to clinic risk tolerance.
+- Cloudflare R2 object storage documentation should be reviewed against document retention, export, and backup requirements: https://developers.cloudflare.com/r2/
 - Twilio publishes Malaysia SMS delivery and content restrictions: https://www.twilio.com/en-us/guidelines/my/sms
 - Twilio SendGrid Mail Send API supports transactional email over REST: https://www.twilio.com/docs/sendgrid/api-reference/mail-send/mail-send
 - MiCare describes its Malaysia TPA/e-claims connectivity role: https://eclaims.micaresvc.com/
@@ -155,4 +160,9 @@ These providers are selected, but go-live still needs credentials, contracts, sa
 
 ## Source Of Truth
 
-The code-backed capability map is in `packages/domain/src/productCapabilities.ts`. Provider choices are in `packages/domain/src/providerDecisions.ts`. Tests in `packages/domain/src/productCapabilities.test.ts` and `packages/domain/src/providerDecisions.test.ts` ensure the requested production scope and selected provider path stay represented and do not get silently narrowed.
+The current code-backed capability map is in `packages/domain/src/productCapabilities.ts`. Provider choices in code may still lag the revised planning documents while the architecture is being reworked away from AWS assumptions.
+
+Until those code-backed provider files are updated, the planning source of truth for implementation is:
+- `plan.md` for execution sequence
+- `docs/architecture.md` for target architecture
+- `docs/production-capability-plan.md` for capability scope and provider intent
