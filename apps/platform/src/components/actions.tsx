@@ -35,7 +35,7 @@ type ActionPayload = Record<string, unknown>;
 const endpointLabels: Record<PanelKind, string> = {
   admin: "/api/admin/registrations",
   medicine: "/api/stock/receive",
-  insight: "/api/owner/export",
+  insight: "/api/reports/snapshots",
   patient: "/api/appointments",
   staff: "/api/stock/scan",
   claims: "/api/claims/eligibility"
@@ -417,7 +417,7 @@ export function InsightExportAction() {
       title="Generate export"
       onSubmit={async () => {
         const payload = buildInsightExportPayload();
-        const result = await getCloudflareAction(`${endpointLabels.insight}?includePhi=false`, {
+        const result = await postCloudflareAction(endpointLabels.insight, payload, {
           actorId: "platform-owner-preview",
           role: "owner"
         });
@@ -872,19 +872,6 @@ async function postCloudflareAction(endpoint: string, payload: ActionPayload, au
   }
 }
 
-async function getCloudflareAction(endpoint: string, auth?: ApiAuth): Promise<ApiResult> {
-  try {
-    const response = await fetch(endpoint, {
-      method: "GET",
-      headers: apiHeaders(auth, false)
-    });
-
-    return responseToApiResult(response);
-  } catch {
-    return { kind: "fallback", reason: fallbackReasons.offline };
-  }
-}
-
 async function responseToApiResult(response: Response): Promise<ApiResult> {
   if (response.ok) {
     return {
@@ -926,12 +913,22 @@ function apiHeaders(auth: ApiAuth | undefined, includeJson = true): HeadersInit 
 }
 
 function buildInsightExportPayload(): ActionPayload {
+  const now = new Date();
+  const start = new Date(now);
+  start.setUTCDate(start.getUTCDate() - 1);
+
   return {
-    generatedAt: new Date().toISOString(),
-    scope: "PHI-safe owner summary",
-    metrics: ["daily revenue", "queue SLA", "panel AR", "medicine expiry risk"],
-    excluded: ["clinical notes", "raw IC/passport", "prescription detail", "WhatsApp message content"],
-    source: "platform-insight-foundation"
+    branchId: "puncak-alam",
+    reportType: "owner_safe_summary",
+    periodStart: start.toISOString(),
+    periodEnd: now.toISOString(),
+    metadata: {
+      generatedAt: now.toISOString(),
+      scope: "PHI-safe owner summary",
+      metrics: ["daily revenue", "queue SLA", "panel AR", "medicine expiry risk"],
+      excluded: ["clinical notes", "raw IC/passport", "prescription detail", "WhatsApp message content"],
+      source: "platform-insight-foundation"
+    }
   };
 }
 

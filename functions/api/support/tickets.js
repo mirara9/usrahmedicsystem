@@ -3,6 +3,7 @@ import {
   createId,
   getDb,
   handleOptions,
+  HttpError,
   json,
   optionalJson,
   readJson,
@@ -57,6 +58,12 @@ export async function onRequestPost(context) {
       ? await requireBranchAccess(context, db, branchId, ["owner", "admin", "support", "staff"])
       : requireRole(context, ["owner", "support"]);
     const ticketId = cleanString(body.id, 128) || createId("ticket");
+    const priority = cleanString(body.priority, 20) || "normal";
+    const descriptionText = cleanString(body.descriptionText, 4000);
+
+    if (["high", "urgent"].includes(priority) && !descriptionText) {
+      throw new HttpError(400, "SUPPORT_DESCRIPTION_REQUIRED", "High and urgent support tickets require a meaningful description.");
+    }
 
     await db.prepare(
       `INSERT INTO support_tickets (
@@ -69,8 +76,8 @@ export async function onRequestPost(context) {
       cleanString(body.requesterStaffId, 128) || actor.id,
       cleanString(body.supportPlan, 20) || "standard",
       requiredString(body.subject, "subject", 180),
-      cleanString(body.descriptionText, 4000),
-      cleanString(body.priority, 20) || "normal",
+      descriptionText,
+      priority,
       cleanString(body.status, 20) || "open",
       optionalJson(body.metadata)
     ).run();
@@ -85,7 +92,7 @@ export async function onRequestPost(context) {
       phiScope: "none",
       metadata: {
         supportPlan: body.supportPlan || "standard",
-        priority: body.priority || "normal"
+        priority
       }
     });
 

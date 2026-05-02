@@ -3,6 +3,7 @@ import {
   createId,
   getDb,
   handleOptions,
+  HttpError,
   json,
   optionalJson,
   readJson,
@@ -55,6 +56,11 @@ export async function onRequestPost(context) {
       : requireRole(context, ["owner", "support"]);
     const taskId = cleanString(body.id, 128) || createId("onboard");
     const status = cleanString(body.status, 20) || "todo";
+    const evidenceUri = cleanString(body.evidenceUri, 500);
+
+    if (status === "done" && !evidenceUri) {
+      throw new HttpError(400, "ONBOARDING_EVIDENCE_REQUIRED", "Completed onboarding tasks require evidenceUri.");
+    }
 
     await db.prepare(
       `INSERT INTO onboarding_tasks (
@@ -78,7 +84,7 @@ export async function onRequestPost(context) {
       status,
       cleanString(body.dueOn, 40),
       status === "done" ? (cleanString(body.completedAt, 40) || new Date().toISOString()) : cleanString(body.completedAt, 40),
-      cleanString(body.evidenceUri, 500),
+      evidenceUri,
       optionalJson(body.metadata)
     ).run();
 

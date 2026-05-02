@@ -76,7 +76,7 @@ export default function InsightPage() {
         <div className="panel">
           <h2>PHI-safe export action</h2>
           <p>Submits through the Cloudflare API path first, then falls back to a local safe JSON export when the endpoint is not deployed.</p>
-          <CloudflareReadiness endpoint="/api/insight/exports" note="Expected to enforce role, branch scope, PHI exclusions, and audit reason once backend wiring lands." />
+          <CloudflareReadiness endpoint="/api/reports/snapshots" note="Generates PHI-safe report snapshots through Pages Functions with branch scope, period validation, and audit events." />
           <InsightExportAction />
         </div>
 

@@ -3,6 +3,7 @@ import {
   createId,
   getDb,
   handleOptions,
+  HttpError,
   json,
   readJson,
   requiredString,
@@ -56,6 +57,11 @@ export async function onRequestPost(context) {
     const reportType = cleanString(body.reportType, 40) || "clinic_daily";
     const periodStart = requiredString(body.periodStart, "periodStart", 40);
     const periodEnd = requiredString(body.periodEnd, "periodEnd", 40);
+
+    if (new Date(periodEnd).getTime() < new Date(periodStart).getTime()) {
+      throw new HttpError(400, "INVALID_REPORT_PERIOD", "periodEnd must be on or after periodStart.");
+    }
+
     const summary = await buildSummary(db, branchId, periodStart, periodEnd);
     const snapshotId = cleanString(body.id, 128) || createId("report");
     const pepper = context.env.AUDIT_HASH_PEPPER || "";
