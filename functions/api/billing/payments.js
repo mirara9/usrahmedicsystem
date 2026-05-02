@@ -14,10 +14,38 @@ import {
 import { writeAuditEvent } from "../../_lib/audit.js";
 import { requireBranchAccess } from "../../_lib/access.js";
 
-const METHODS = "POST, OPTIONS";
+const METHODS = "GET, POST, OPTIONS";
 
 export function onRequestOptions(context) {
   return handleOptions(context, METHODS);
+}
+
+export async function onRequestGet(context) {
+  return runEndpoint(context, METHODS, async () => {
+    const db = getDb(context);
+    const url = new URL(context.request.url);
+    const branchId = requiredString(url.searchParams.get("branchId"), "branchId", 128);
+    await requireBranchAccess(context, db, branchId, ["owner", "admin", "front_desk", "billing", "staff"]);
+    const invoiceId = cleanString(url.searchParams.get("invoiceId"), 128);
+    const patientId = cleanString(url.searchParams.get("patientId"), 128);
+    const status = cleanString(url.searchParams.get("status"), 20);
+
+    const payments = await db.prepare(
+      `SELECT *
+      FROM payments
+      WHERE branch_id = ?
+        AND (? IS NULL OR invoice_id = ?)
+        AND (? IS NULL OR patient_id = ?)
+        AND (? IS NULL OR status = ?)
+      ORDER BY created_at DESC
+      LIMIT 100`
+    ).bind(branchId, invoiceId, invoiceId, patientId, patientId, status, status).all();
+
+    return json(context, {
+      ok: true,
+      payments: payments.results || []
+    }, { methods: METHODS });
+  });
 }
 
 export async function onRequestPost(context) {

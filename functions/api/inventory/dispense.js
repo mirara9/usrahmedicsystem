@@ -13,10 +13,44 @@ import {
 import { hashValue, writeAuditEvent } from "../../_lib/audit.js";
 import { requireBranchAccess } from "../../_lib/access.js";
 
-const METHODS = "POST, OPTIONS";
+const METHODS = "GET, POST, OPTIONS";
 
 export function onRequestOptions(context) {
   return handleOptions(context, METHODS);
+}
+
+export async function onRequestGet(context) {
+  return runEndpoint(context, METHODS, async () => {
+    const db = getDb(context);
+    const url = new URL(context.request.url);
+    const branchId = requiredString(url.searchParams.get("branchId"), "branchId", 128);
+    await requireBranchAccess(context, db, branchId, ["owner", "admin", "doctor", "pharmacist", "staff"]);
+    const patientId = cleanString(url.searchParams.get("patientId"), 128);
+    const visitId = cleanString(url.searchParams.get("visitId"), 128);
+    const status = cleanString(url.searchParams.get("status"), 20);
+
+    const dispenses = await db.prepare(
+      `SELECT
+        d.*,
+        p.full_name AS patient_full_name,
+        COUNT(l.id) AS line_count
+      FROM stock_dispenses d
+      LEFT JOIN patients p ON p.id = d.patient_id
+      LEFT JOIN stock_dispense_lines l ON l.dispense_id = d.id
+      WHERE d.branch_id = ?
+        AND (? IS NULL OR d.patient_id = ?)
+        AND (? IS NULL OR d.visit_id = ?)
+        AND (? IS NULL OR d.status = ?)
+      GROUP BY d.id
+      ORDER BY d.created_at DESC
+      LIMIT 100`
+    ).bind(branchId, patientId, patientId, visitId, visitId, status, status).all();
+
+    return json(context, {
+      ok: true,
+      dispenses: dispenses.results || []
+    }, { methods: METHODS });
+  });
 }
 
 export async function onRequestPost(context) {

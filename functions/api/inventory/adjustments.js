@@ -13,10 +13,41 @@ import {
 import { hashValue, writeAuditEvent } from "../../_lib/audit.js";
 import { requireBranchAccess } from "../../_lib/access.js";
 
-const METHODS = "POST, OPTIONS";
+const METHODS = "GET, POST, OPTIONS";
 
 export function onRequestOptions(context) {
   return handleOptions(context, METHODS);
+}
+
+export async function onRequestGet(context) {
+  return runEndpoint(context, METHODS, async () => {
+    const db = getDb(context);
+    const url = new URL(context.request.url);
+    const branchId = requiredString(url.searchParams.get("branchId"), "branchId", 128);
+    await requireBranchAccess(context, db, branchId, ["owner", "admin", "pharmacist", "staff"]);
+    const stockItemId = cleanString(url.searchParams.get("stockItemId"), 128);
+    const stockLotId = cleanString(url.searchParams.get("stockLotId"), 128);
+
+    const adjustments = await db.prepare(
+      `SELECT
+        a.*,
+        i.name AS stock_item_name,
+        l.lot_number
+      FROM stock_adjustments a
+      JOIN stock_items i ON i.id = a.stock_item_id
+      LEFT JOIN stock_lots l ON l.id = a.stock_lot_id
+      WHERE a.branch_id = ?
+        AND (? IS NULL OR a.stock_item_id = ?)
+        AND (? IS NULL OR a.stock_lot_id = ?)
+      ORDER BY a.created_at DESC
+      LIMIT 100`
+    ).bind(branchId, stockItemId, stockItemId, stockLotId, stockLotId).all();
+
+    return json(context, {
+      ok: true,
+      adjustments: adjustments.results || []
+    }, { methods: METHODS });
+  });
 }
 
 export async function onRequestPost(context) {
