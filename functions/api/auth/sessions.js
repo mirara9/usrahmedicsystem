@@ -14,6 +14,7 @@ import {
   runEndpoint
 } from "../../_lib/http.js";
 import { hashValue, writeAuditEvent } from "../../_lib/audit.js";
+import { resolveActor } from "../../_lib/access.js";
 
 const METHODS = "GET, POST, OPTIONS";
 
@@ -23,9 +24,28 @@ export function onRequestOptions(context) {
 
 export async function onRequestGet(context) {
   return runEndpoint(context, METHODS, async () => {
-    requireRole(context, ["owner", "admin"]);
     const db = getDb(context);
     const url = new URL(context.request.url);
+    const wantsCurrent = parseBoolean(url.searchParams.get("current"));
+
+    if (wantsCurrent) {
+      const actor = await resolveActor(context, db);
+      const currentSession = await db.prepare(
+        `SELECT
+          id, staff_account_id, branch_id, mfa_verified_at, issued_at,
+          expires_at, revoked_at, metadata_json
+        FROM staff_sessions
+        WHERE id = ?
+        LIMIT 1`
+      ).bind(requiredString(actor.sessionId, "sessionId", 128)).first();
+
+      return json(context, {
+        ok: true,
+        currentSession
+      }, { methods: METHODS });
+    }
+
+    requireRole(context, ["owner", "admin"]);
     const staffId = cleanString(url.searchParams.get("staffId"), 128);
     const branchId = cleanString(url.searchParams.get("branchId"), 128);
 
@@ -49,9 +69,37 @@ export async function onRequestGet(context) {
 
 export async function onRequestPost(context) {
   return runEndpoint(context, METHODS, async () => {
-    const actor = requireRole(context, ["owner", "admin"]);
     const db = getDb(context);
     const body = await readJson(context);
+
+    if (cleanString(body.action, 40) === "revokeCurrent") {
+      const actor = await resolveActor(context, db);
+      const sessionId = requiredString(actor.sessionId, "sessionId", 128);
+      await db.prepare(
+        "UPDATE staff_sessions SET revoked_at = CURRENT_TIMESTAMP WHERE id = ? AND revoked_at IS NULL"
+      ).bind(sessionId).run();
+
+      const auditId = await writeAuditEvent(context, db, {
+        branchId: cleanString(actor.sessionBranchId, 128),
+        actorType: actor.role,
+        actorId: actor.id,
+        action: "auth.session.revoke_self",
+        resourceType: "staff_session",
+        resourceId: sessionId,
+        phiScope: "none",
+        metadata: {
+          revokedBy: "self"
+        }
+      });
+
+      return json(context, {
+        ok: true,
+        revokedSessionId: sessionId,
+        auditEventId: auditId
+      }, { methods: METHODS });
+    }
+
+    const actor = requireRole(context, ["owner", "admin"]);
     const staffId = requiredString(body.staffId, "staffId", 128);
     const rawSessionToken = requiredString(body.sessionToken, "sessionToken", 500);
     const expiresAt = requiredString(body.expiresAt, "expiresAt", 40);

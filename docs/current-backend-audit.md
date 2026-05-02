@@ -26,7 +26,7 @@ This means the next implementation phases should extend the existing foundation 
 
 ### Auth and staff foundation
 - `GET|POST /api/auth/staff`
-- `GET|POST /api/auth/sessions`
+- `GET|POST /api/auth/sessions` (admin list/create, plus bearer-authenticated current session lookup and self-revoke)
 
 ### Clinical / operational foundation
 - `GET|POST /api/patients`
