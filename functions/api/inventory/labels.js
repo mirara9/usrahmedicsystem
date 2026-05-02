@@ -3,6 +3,7 @@ import {
   createId,
   getDb,
   handleOptions,
+  HttpError,
   json,
   optionalJson,
   readJson,
@@ -48,6 +49,10 @@ export async function onRequestPost(context) {
     const actor = await requireBranchAccess(context, db, branchId, ["owner", "admin", "pharmacist", "staff"]);
     const labelJobId = cleanString(body.id, 128) || createId("label");
     const status = cleanString(body.status, 20) || "queued";
+
+    if (status === "printed" && (!cleanString(body.dispenseId, 128) || !cleanString(body.printerName, 120))) {
+      throw new HttpError(400, "LABEL_PRINT_CONTEXT_REQUIRED", "Printed label jobs require both dispenseId and printerName.");
+    }
 
     await db.prepare(
       `INSERT INTO medicine_label_jobs (

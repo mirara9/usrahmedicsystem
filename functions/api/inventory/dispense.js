@@ -3,6 +3,7 @@ import {
   createId,
   getDb,
   handleOptions,
+  HttpError,
   json,
   optionalJson,
   parseNumber,
@@ -63,6 +64,16 @@ export async function onRequestPost(context) {
     const dispenseId = cleanString(body.id, 128) || createId("dispense");
     const labelJobId = body.createLabelJob === false ? null : createId("label");
     const pepper = context.env.AUDIT_HASH_PEPPER || "";
+    const branchRole = cleanString(actor.branchRole, 40) || actor.role;
+
+    if (lines.length === 0) {
+      throw new HttpError(400, "DISPENSE_LINES_REQUIRED", "Dispensing requires at least one dispense line.");
+    }
+
+    if (!["pharmacist", "doctor", "owner", "admin"].includes(branchRole)) {
+      throw new HttpError(403, "DISPENSE_ROLE_REQUIRED", "Only pharmacist-authorized roles can dispense medicine.");
+    }
+
     const statements = [
       db.prepare(
         `INSERT INTO stock_dispenses (
