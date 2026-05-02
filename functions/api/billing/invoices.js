@@ -3,6 +3,7 @@ import {
   createId,
   getDb,
   handleOptions,
+  HttpError,
   json,
   optionalJson,
   readJson,
@@ -85,6 +86,10 @@ export async function onRequestPost(context) {
     const taxCents = preparedLines.reduce((sum, line) => sum + line.taxCents, 0);
     const totalCents = preparedLines.reduce((sum, line) => sum + line.totalCents, 0);
     const status = cleanString(body.status, 20) || "draft";
+
+    if (status === "issued" && preparedLines.length === 0) {
+      throw new HttpError(400, "INVOICE_LINES_REQUIRED", "Issued invoices require at least one invoice line.");
+    }
 
     const statements = [
       db.prepare(

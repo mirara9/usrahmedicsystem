@@ -64,6 +64,28 @@ export async function onRequestPost(context) {
 
     const paymentId = cleanString(body.id, 128) || createId("payment");
     const invoiceId = cleanString(body.invoiceId, 128);
+
+    if (invoiceId && status === "paid") {
+      const invoice = await db.prepare(
+        `SELECT id, branch_id, status, balance_cents
+        FROM invoices
+        WHERE id = ?
+        LIMIT 1`
+      ).bind(invoiceId).first();
+
+      if (!invoice || invoice.branch_id !== branchId) {
+        throw new HttpError(400, "INVOICE_NOT_FOUND", "invoiceId must reference an invoice in the same branch.");
+      }
+
+      if (!["issued", "part_paid"].includes(invoice.status)) {
+        throw new HttpError(400, "INVOICE_NOT_PAYABLE", "Payments can only be recorded against issued or part-paid invoices.");
+      }
+
+      if (amountCents > Number(invoice.balance_cents || 0)) {
+        throw new HttpError(400, "PAYMENT_EXCEEDS_BALANCE", "Payment amount exceeds the remaining invoice balance.");
+      }
+    }
+
     const statements = [
       db.prepare(
         `INSERT INTO payments (
