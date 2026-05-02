@@ -76,6 +76,8 @@ Provides:
 ### `functions/_lib/access.js`
 Provides:
 - branch-scoped access enforcement using `staff_branch_assignments`
+- active staff session token resolution from bearer/session headers for branch routes
+- session branch mismatch protection for branch-scoped workflows
 - role alias handling
 - owner bypass path
 - branch assignment checks

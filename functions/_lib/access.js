@@ -2,6 +2,7 @@ import { cleanString, getActor, HttpError } from "./http.js";
 
 const OWNER_ROLES = new Set(["owner"]);
 const STAFF_ROLE_ALIASES = new Set(["staff", "doctor", "nurse", "pharmacist", "front_desk", "billing", "support"]);
+const BEARER_PREFIX = "Bearer ";
 
 export function canUseRole(actorRole, allowedRoles) {
   if (allowedRoles.includes(actorRole)) {
@@ -12,7 +13,7 @@ export function canUseRole(actorRole, allowedRoles) {
 }
 
 export async function requireBranchAccess(context, db, branchId, allowedRoles) {
-  const actor = getActor(context);
+  const actor = await resolveActor(context, db);
   const normalizedBranchId = cleanString(branchId, 128);
 
   if (!normalizedBranchId) {
@@ -30,7 +31,11 @@ export async function requireBranchAccess(context, db, branchId, allowedRoles) {
   }
 
   if (!actor.id) {
-    throw new HttpError(401, "AUTH_REQUIRED", "X-UsrahMedic-Actor-Id is required for branch-scoped access.");
+    throw new HttpError(401, "AUTH_REQUIRED", "A staff identity is required for branch-scoped access.");
+  }
+
+  if (actor.sessionBranchId && actor.sessionBranchId !== normalizedBranchId && actor.role !== "admin") {
+    throw new HttpError(403, "BRANCH_SESSION_MISMATCH", "Authenticated session is not valid for this branch.");
   }
 
   const assignment = await db.prepare(
@@ -63,6 +68,73 @@ export async function requireBranchAccess(context, db, branchId, allowedRoles) {
   };
 }
 
+export async function resolveActor(context, db) {
+  const sessionToken = extractSessionToken(context.request.headers);
+  if (!sessionToken) {
+    return getActor(context);
+  }
+
+  const pepper = context.env.AUDIT_HASH_PEPPER || "";
+  const sessionTokenHash = await hashSessionToken(sessionToken, pepper);
+  const session = await db.prepare(
+    `SELECT
+      ss.id AS session_id,
+      ss.staff_account_id,
+      ss.branch_id AS session_branch_id,
+      s.role,
+      s.status,
+      s.mfa_required,
+      ss.mfa_verified_at
+    FROM staff_sessions ss
+    JOIN staff_accounts s ON s.id = ss.staff_account_id
+    WHERE ss.session_token_hash = ?
+      AND ss.revoked_at IS NULL
+      AND ss.expires_at >= CURRENT_TIMESTAMP
+      AND s.status = 'active'
+      AND (s.mfa_required = 0 OR ss.mfa_verified_at IS NOT NULL)
+    LIMIT 1`
+  ).bind(sessionTokenHash).first();
+
+  if (!session) {
+    throw new HttpError(401, "SESSION_INVALID", "Session token is invalid, expired, or revoked.");
+  }
+
+  return {
+    role: cleanString(session.role, 32)?.toLowerCase() || "staff",
+    id: cleanString(session.staff_account_id, 128),
+    sessionId: cleanString(session.session_id, 128),
+    sessionBranchId: cleanString(session.session_branch_id, 128),
+    authenticatedVia: "session"
+  };
+}
+
 export function appendBranchFilter(url, fieldName = "branchId") {
   return cleanString(url.searchParams.get(fieldName), 128);
+}
+
+function extractSessionToken(headers) {
+  const directToken = cleanString(headers.get("X-UsrahMedic-Session-Token"), 500);
+  if (directToken) {
+    return directToken;
+  }
+
+  const authorization = cleanString(headers.get("Authorization"), 600);
+  if (!authorization || !authorization.startsWith(BEARER_PREFIX)) {
+    return null;
+  }
+
+  return cleanString(authorization.slice(BEARER_PREFIX.length), 500);
+}
+
+async function hashSessionToken(value, pepper = "") {
+  const normalized = cleanString(value, 500);
+  if (!normalized) {
+    return null;
+  }
+
+  const data = new TextEncoder().encode(`${pepper}:${normalized}`);
+  const digest = await crypto.subtle.digest("SHA-256", data);
+  return [...new Uint8Array(digest)]
+    .map((byte) => byte.toString(16).padStart(2, "0"))
+    .join("");
 }
