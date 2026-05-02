@@ -97,15 +97,11 @@ export function LocalizedPublicNav({ active }: PublicNavProps) {
 
   const menuLinks = [
     { href: "/", label: copy.home, isActive: active === "home" },
-    { href: "/#promosi", label: "Promosi" },
-    { href: "/#tentang", label: "Siapa Kami" },
-    { href: "/#panel", label: "Panel" },
-    { href: "/#doktor", label: "Profil Doktor" },
-    { href: "/#info-kesihatan", label: "Info Kesihatan" },
-    { href: "/#perkhidmatan", label: "Perkhidmatan" },
-    { href: "/#rangkaian", label: "Rangkaian Kami" },
-    { href: "/#sertai-kami", label: "Sertai Kami" },
-    { href: "/#kerjaya", label: "Kerjaya" }
+    { href: "/#promosi", label: copy.promotions },
+    { href: "/#tentang", label: copy.about },
+    { href: "/#perkhidmatan", label: copy.services },
+    { href: "/#rangkaian", label: copy.branches },
+    { href: "/#hubungi", label: copy.contact }
   ];
 
   return (
@@ -148,24 +144,44 @@ const sharedCopy = {
   en: {
     navAria: "Public navigation",
     home: "Home",
+    promotions: "Promotions",
+    about: "About",
+    services: "Services",
+    branches: "Branches",
+    contact: "Contact",
     bookAppointment: "Book appointment",
     languageLabel: "Select language"
   },
   ms: {
     navAria: "Navigasi awam",
     home: "Laman utama",
+    promotions: "Promosi",
+    about: "Tentang",
+    services: "Perkhidmatan",
+    branches: "Cawangan",
+    contact: "Hubungi",
     bookAppointment: "Tempah janji temu",
     languageLabel: "Pilih bahasa"
   },
   zh: {
     navAria: "公共导航",
     home: "主页",
+    promotions: "促销",
+    about: "关于我们",
+    services: "服务",
+    branches: "分院",
+    contact: "联系",
     bookAppointment: "预约",
     languageLabel: "选择语言"
   },
   ta: {
     navAria: "பொது வழிசெலுத்தல்",
     home: "முகப்பு",
+    promotions: "சலுகைகள்",
+    about: "எங்களை பற்றி",
+    services: "சேவைகள்",
+    branches: "கிளைகள்",
+    contact: "தொடர்பு",
     bookAppointment: "நேரம் பதிவு",
     languageLabel: "மொழியைத் தேர்வு செய்க"
   }
@@ -236,21 +252,21 @@ const publicHomeCopy = {
 
 const patientPageCopy = {
   en: {
-    badge: "Usrah Medic online booking",
-    heroTitle: "Book a clinic slot, confirm your details, pay the RM10 deposit.",
+    badge: "Usrah Medic appointment request",
+    heroTitle: "Request an appointment and let the clinic confirm the best slot for you.",
     heroText:
-      "This booking experience follows the official Usrah Medic style: clear, patient-friendly, and action-focused. Logged-in patients will see their details filled automatically before payment.",
+      "Choose your branch, service, and preferred time. The clinic will review your request and contact you by phone or WhatsApp to confirm the final appointment.",
     open24: "24-hour branch",
-    deposit: "RM10 deposit",
+    requestOnly: "Clinic confirmation first",
     branchCount: "branches",
     heroPhotoLabel: "Usrah Medic family clinic booking",
     processAria: "Booking process",
-    processBadge: "How booking works",
-    processTitle: "Simple for patients, complete for the clinic",
-    processText: "The RM10 deposit helps reduce no-shows. The clinic still confirms the final slot before the visit.",
+    processBadge: "How it works",
+    processTitle: "Simple request, human confirmation",
+    processText: "This form sends your preferred slot to the clinic. Payment is not collected on this page.",
     servicesBadge: "Popular services",
-    servicesTitle: "Frequently booked services",
-    servicesText: "Focused on what patients actually look for: mother and child care, ultrasound, screening, vaccination, and family treatment.",
+    servicesTitle: "Frequently requested services",
+    servicesText: "Focused on what patients usually ask first: mother and child care, ultrasound, screening, vaccination, and family treatment.",
     branchAria: "UsrahMedic branches",
     services: [
       {
@@ -268,27 +284,27 @@ const patientPageCopy = {
     ],
     bookingSteps: [
       "Choose branch and service",
-      "Check patient details",
-      "Pay RM10 deposit",
+      "Share patient details",
+      "Send request",
       "Wait for clinic confirmation"
     ]
   },
   ms: {
-    badge: "Tempahan online Usrah Medic",
-    heroTitle: "Tempah slot klinik, sahkan butiran, bayar deposit RM10.",
+    badge: "Permintaan janji temu Usrah Medic",
+    heroTitle: "Hantar permintaan janji temu dan biar klinik sahkan slot terbaik untuk anda.",
     heroText:
-      "Pengalaman tempahan ini direka seperti laman rasmi Usrah Medic: jelas, mesra pesakit, dan terus kepada tindakan. Pesakit yang log masuk akan melihat maklumat mereka diisi secara automatik sebelum bayaran.",
+      "Pilih cawangan, servis, dan masa pilihan. Klinik akan semak permintaan anda dan hubungi melalui telefon atau WhatsApp untuk pengesahan akhir.",
     open24: "Cawangan 24 jam",
-    deposit: "Deposit RM10",
+    requestOnly: "Sahkan dengan klinik dahulu",
     branchCount: "cawangan",
     heroPhotoLabel: "Tempahan klinik keluarga Usrah Medic",
     processAria: "Proses tempahan",
-    processBadge: "Cara tempahan",
-    processTitle: "Ringkas untuk pesakit, lengkap untuk klinik",
-    processText: "Deposit RM10 membantu mengurangkan no-show. Klinik masih perlu mengesahkan slot sebenar sebelum lawatan.",
+    processBadge: "Cara ia berfungsi",
+    processTitle: "Permintaan ringkas, pengesahan oleh klinik",
+    processText: "Borang ini menghantar slot pilihan anda kepada klinik. Tiada bayaran diambil di halaman ini.",
     servicesBadge: "Perkhidmatan popular",
-    servicesTitle: "Perkhidmatan yang selalu ditempah",
-    servicesText: "Fokus kepada servis yang pesakit benar-benar cari: ibu dan anak, ultrasound, saringan, vaksinasi, dan rawatan keluarga.",
+    servicesTitle: "Perkhidmatan yang kerap diminta",
+    servicesText: "Fokus kepada servis yang pesakit biasanya tanya dahulu: ibu dan anak, ultrasound, saringan, vaksinasi, dan rawatan keluarga.",
     branchAria: "Cawangan UsrahMedic",
     services: [
       {
@@ -306,27 +322,27 @@ const patientPageCopy = {
     ],
     bookingSteps: [
       "Pilih cawangan dan perkhidmatan",
-      "Semak butiran pesakit",
-      "Bayar deposit RM10",
+      "Isi butiran pesakit",
+      "Hantar permintaan",
       "Tunggu pengesahan klinik"
     ]
   },
   zh: {
-    badge: "Usrah Medic 在线预约",
-    heroTitle: "预约诊所时段，确认资料，支付 RM10 订金。",
+    badge: "Usrah Medic 预约请求",
+    heroTitle: "提交预约请求，由诊所为您确认最合适的时段。",
     heroText:
-      "预约流程延续 Usrah Medic 官方网站风格：清楚、亲切、直接。已登录患者会在付款前自动带入个人资料。",
+      "选择分院、服务和首选时间后，诊所会通过电话或 WhatsApp 与您联系确认最终预约。",
     open24: "24 小时分院",
-    deposit: "RM10 订金",
+    requestOnly: "先由诊所确认",
     branchCount: "间分院",
     heroPhotoLabel: "Usrah Medic 家庭诊所预约",
     processAria: "预约流程",
-    processBadge: "预约步骤",
-    processTitle: "患者操作简单，诊所资料完整",
-    processText: "RM10 订金有助减少爽约。诊所仍会在就诊前确认最终时段。",
+    processBadge: "运作方式",
+    processTitle: "先提交请求，再由诊所人工确认",
+    processText: "此页面不会收取付款，只会把您的首选时段发送给诊所。",
     servicesBadge: "热门服务",
-    servicesTitle: "常被预约的服务",
-    servicesText: "聚焦患者真正需要的服务：母婴护理、超声波、筛查、疫苗和家庭医疗。",
+    servicesTitle: "常被咨询的服务",
+    servicesText: "聚焦患者最常先询问的项目：母婴护理、超声波、筛查、疫苗和家庭医疗。",
     branchAria: "UsrahMedic 分院",
     services: [
       {
@@ -344,27 +360,27 @@ const patientPageCopy = {
     ],
     bookingSteps: [
       "选择分院和服务",
-      "检查患者资料",
-      "支付 RM10 订金",
+      "填写患者资料",
+      "提交请求",
       "等待诊所确认"
     ]
   },
   ta: {
-    badge: "Usrah Medic ஆன்லைன் முன்பதிவு",
-    heroTitle: "கிளினிக் நேரம் பதிவு செய்து, விவரங்களை உறுதி செய்து, RM10 முன்பணம் செலுத்துங்கள்.",
+    badge: "Usrah Medic நேர கோரிக்கை",
+    heroTitle: "நேர கோரிக்கையை அனுப்புங்கள்; சிறந்த நேரத்தை கிளினிக் உறுதி செய்யும்.",
     heroText:
-      "இந்த முன்பதிவு அனுபவம் Usrah Medic அதிகாரப்பூர்வ தளத்தின் பாணியைப் பின்பற்றுகிறது: தெளிவு, நோயாளருக்கு எளிமை, மற்றும் நேரடி செயல். உள்நுழைந்த நோயாளர்களின் விவரங்கள் கட்டணத்திற்கு முன் தானாக நிரப்பப்படும்.",
+      "கிளை, சேவை, மற்றும் விருப்ப நேரத்தைத் தேர்வு செய்யுங்கள். இறுதி நேரத்தை உறுதி செய்ய கிளினிக் தொலைபேசி அல்லது WhatsApp மூலம் தொடர்பு கொள்ளும்.",
     open24: "24 மணி கிளை",
-    deposit: "RM10 முன்பணம்",
+    requestOnly: "முதலில் கிளினிக் உறுதி செய்யும்",
     branchCount: "கிளைகள்",
     heroPhotoLabel: "Usrah Medic குடும்ப கிளினிக் முன்பதிவு",
     processAria: "முன்பதிவு நடைமுறை",
-    processBadge: "முன்பதிவு முறை",
-    processTitle: "நோயாளருக்கு எளிமை, கிளினிக்கிற்கு முழுமை",
-    processText: "RM10 முன்பணம் no-show குறைக்க உதவும். வருகைக்கு முன் இறுதி நேரத்தை கிளினிக் உறுதி செய்யும்.",
+    processBadge: "இது எப்படி செயல்படுகிறது",
+    processTitle: "சுருக்கமான கோரிக்கை, மனித உறுதிப்படுத்தல்",
+    processText: "இந்தப் பக்கம் கட்டணம் எடுக்காது; உங்கள் விருப்ப நேரம் கிளினிக்கிற்கு அனுப்பப்படும்.",
     servicesBadge: "பிரபல சேவைகள்",
-    servicesTitle: "அதிகம் முன்பதிவு செய்யப்படும் சேவைகள்",
-    servicesText: "நோயாளர்கள் தேடும் தாய்-குழந்தை பராமரிப்பு, அல்ட்ராசவுண்ட், screening, தடுப்பூசி, குடும்ப சிகிச்சை ஆகியவற்றில் கவனம்.",
+    servicesTitle: "அதிகம் கேட்கப்படும் சேவைகள்",
+    servicesText: "தாய்-குழந்தை பராமரிப்பு, அல்ட்ராசவுண்ட், screening, தடுப்பூசி, குடும்ப சிகிச்சை போன்றவற்றில் கவனம்.",
     branchAria: "UsrahMedic கிளைகள்",
     services: [
       {
@@ -382,8 +398,8 @@ const patientPageCopy = {
     ],
     bookingSteps: [
       "கிளை மற்றும் சேவையைத் தேர்வு செய்க",
-      "நோயாளர் விவரங்களை சரிபார்",
-      "RM10 முன்பணம் செலுத்து",
+      "நோயாளர் விவரங்களை நிரப்புக",
+      "கோரிக்கையை அனுப்பு",
       "கிளினிக் உறுதிப்படுத்தலை காத்திரு"
     ]
   }
@@ -392,19 +408,19 @@ const patientPageCopy = {
 const patientBookingCopy = {
   en: {
     loading: {
-      title: "Sending booking",
-      detail: "We are saving patient details, preferred slot, and RM10 deposit."
+      title: "Sending appointment request",
+      detail: "We are saving your details and preferred slot for clinic review."
     },
     initial: {
-      title: "Ready for booking",
-      detail: "Check patient details, choose a slot, then confirm the RM10 deposit."
+      title: "Ready to send request",
+      detail: "Fill in the patient details, choose a preferred slot, and submit the request."
     },
     fallbackOffline: "Connection is unstable; the clinic needs to confirm this request manually.",
     fallbackEndpoint: "The clinic needs to confirm this request manually.",
-    cardBadge: "Booking form",
+    cardBadge: "Appointment form",
     cardTitle: "Appointment details",
-    cardText: "These details help the branch confirm the slot and contact the patient.",
-    progress: ["Details", "Slot", "Deposit"],
+    cardText: "These details help the branch review your request and contact the patient.",
+    progress: ["Details", "Slot", "Submit"],
     loggedIn: "Logged-in patient",
     newPatient: "New patient",
     profileFilled: "Profile details are filled automatically",
@@ -413,15 +429,15 @@ const patientBookingCopy = {
     profileEmptyText: "Details will be used for appointment confirmation and deposit receipt.",
     bookOther: "Book for another patient",
     useProfile: "Use logged-in profile",
-    incompleteTitle: "Booking details incomplete",
-    incompleteDetail: "Name, phone, visit date, time, and PDPA consent are required before collecting the RM10 deposit.",
+    incompleteTitle: "Appointment request incomplete",
+    incompleteDetail: "Name, phone, visit date, time, and PDPA consent are required before the request can be sent.",
     acceptedTitle: "Appointment request received",
     rejectedTitle: "Booking request was not accepted",
-    successDetail: (service: string, branch: string, method: string) => `${service} at ${branch} was recorded with RM10 deposit via ${method}.`,
-    fallbackDetail: (service: string, branch: string, reason: string) => `${service} at ${branch} is ready for clinic confirmation with RM10 deposit collection. ${reason}`,
+    successDetail: (service: string, branch: string, _method: string) => `${service} at ${branch} was sent to the clinic for confirmation. `,
+    fallbackDetail: (service: string, branch: string, reason: string) => `${service} at ${branch} is ready for clinic follow-up and manual confirmation. ${reason}`,
     retrySuffix: "Please retry when the API is healthy.",
     patientSectionTitle: "Patient details",
-    patientSectionText: "For identity confirmation, notifications, and deposit receipt.",
+    patientSectionText: "For identity confirmation and follow-up contact.",
     fields: {
       fullName: "Full name",
       phone: "Phone number",
@@ -436,47 +452,47 @@ const patientBookingCopy = {
       male: "Male",
       unknown: "Prefer not to say"
     },
-    slotTitle: "Slot and service",
-    slotText: "The clinic will contact you if the selected slot needs adjustment.",
+    slotTitle: "Preferred slot",
+    slotText: "Choose your preferred branch, service, and time. The clinic may suggest a nearby alternative slot.",
     branch: "Branch",
     service: "Service",
     appointmentDate: "Appointment date",
     preferredTime: "Preferred time",
     visitPlaceholder: "Example: antenatal follow-up, scan, child fever, hajj/umrah screening",
-    depositTitle: "RM10 deposit",
-    depositText: "Choose the deposit payment method. Receipt and confirmation are sent after the clinic receives the booking.",
-    paymentAria: "Payment method",
+    depositTitle: "What happens next",
+    depositText: "No payment is collected on this page.",
+    paymentAria: "What happens next",
     summaryAria: "Booking summary",
-    depositLabel: "Deposit",
+    depositLabel: "Next step",
     hotline: "Hotline",
     selectedSlot: "Preferred slot",
-    depositMethod: "Deposit method",
-    consent: "I agree that Usrah Medic may use these details for booking, deposit handling, and patient notifications.",
-    submit: "Pay RM10 & submit booking",
+    depositMethod: "Clinic follow-up",
+    consent: "I agree that Usrah Medic may use these details for appointment handling and patient notifications.",
+    submit: "Send appointment request",
     defaultReason: "Antenatal follow-up and routine check.",
     services: ["Antenatal follow-up", "2D/3D/4D/5D Ultrasound", "GP consultation", "Hajj and Umrah screening", "Health screening", "Family and child treatment"],
     depositMethods: {
-      fpx: "FPX online banking",
-      ewallet: "eWallet / DuitNow",
-      card: "Card",
-      counter: "Pay at counter"
+      fpx: "Clinic reviews your request",
+      ewallet: "Staff confirms the final time by phone or WhatsApp",
+      card: "Bring supporting documents if needed",
+      counter: "Payment only happens at clinic when applicable"
     }
   },
   ms: {
     loading: {
-      title: "Menghantar tempahan",
-      detail: "Kami sedang menyimpan butiran pesakit, slot pilihan, dan deposit RM10."
+      title: "Menghantar permintaan janji temu",
+      detail: "Kami sedang menyimpan butiran anda dan slot pilihan untuk semakan klinik."
     },
     initial: {
-      title: "Sedia untuk tempahan",
-      detail: "Semak butiran pesakit, pilih slot, kemudian sahkan deposit RM10."
+      title: "Sedia untuk hantar permintaan",
+      detail: "Isi butiran pesakit, pilih slot pilihan, dan hantar permintaan kepada klinik."
     },
     fallbackOffline: "Sambungan tidak stabil; klinik perlu mengesahkan permintaan ini secara manual.",
     fallbackEndpoint: "Klinik perlu mengesahkan permintaan ini secara manual.",
-    cardBadge: "Borang tempahan",
+    cardBadge: "Borang janji temu",
     cardTitle: "Maklumat janji temu",
-    cardText: "Butiran ini digunakan oleh cawangan untuk mengesahkan slot dan menghubungi pesakit.",
-    progress: ["Butiran", "Slot", "Deposit"],
+    cardText: "Butiran ini membantu cawangan menyemak permintaan anda dan menghubungi pesakit.",
+    progress: ["Butiran", "Slot", "Hantar"],
     loggedIn: "Pesakit log masuk",
     newPatient: "Pesakit baharu",
     profileFilled: "Maklumat profil telah diisi automatik",
@@ -485,15 +501,15 @@ const patientBookingCopy = {
     profileEmptyText: "Maklumat akan digunakan untuk pengesahan janji temu dan resit deposit.",
     bookOther: "Tempah untuk pesakit lain",
     useProfile: "Guna profil log masuk",
-    incompleteTitle: "Butiran tempahan tidak lengkap",
-    incompleteDetail: "Nama, telefon, tarikh, masa, dan persetujuan PDPA diperlukan sebelum kutipan deposit RM10.",
+    incompleteTitle: "Permintaan janji temu tidak lengkap",
+    incompleteDetail: "Nama, telefon, tarikh, masa, dan persetujuan PDPA diperlukan sebelum permintaan dihantar.",
     acceptedTitle: "Permintaan janji temu diterima",
     rejectedTitle: "Permintaan tempahan tidak diterima",
-    successDetail: (service: string, branch: string, method: string) => `${service} di ${branch} direkodkan dengan deposit RM10 melalui ${method}.`,
-    fallbackDetail: (service: string, branch: string, reason: string) => `${service} di ${branch} sedia untuk pengesahan klinik dengan kutipan deposit RM10. ${reason}`,
+    successDetail: (service: string, branch: string, _method: string) => `${service} di ${branch} telah dihantar kepada klinik untuk pengesahan. `,
+    fallbackDetail: (service: string, branch: string, reason: string) => `${service} di ${branch} sedia untuk susulan dan pengesahan manual oleh klinik. ${reason}`,
     retrySuffix: "Sila cuba semula apabila API sihat.",
     patientSectionTitle: "Butiran pesakit",
-    patientSectionText: "Untuk pengesahan identiti, notifikasi, dan resit deposit.",
+    patientSectionText: "Untuk pengesahan identiti dan susulan daripada klinik.",
     fields: {
       fullName: "Nama penuh",
       phone: "No. telefon",
@@ -508,30 +524,30 @@ const patientBookingCopy = {
       male: "Lelaki",
       unknown: "Tidak dinyatakan"
     },
-    slotTitle: "Slot dan perkhidmatan",
-    slotText: "Klinik akan hubungi jika slot pilihan perlu dilaraskan.",
+    slotTitle: "Slot pilihan",
+    slotText: "Pilih cawangan, servis, dan masa pilihan. Klinik mungkin mencadangkan slot alternatif yang berdekatan.",
     branch: "Cawangan",
     service: "Perkhidmatan",
     appointmentDate: "Tarikh janji temu",
     preferredTime: "Masa pilihan",
     visitPlaceholder: "Contoh: Follow-up antenatal, scan, demam anak, saringan haji/umrah",
-    depositTitle: "Deposit RM10",
-    depositText: "Pilih kaedah bayaran deposit. Resit dan pengesahan akan dihantar selepas klinik menerima tempahan.",
-    paymentAria: "Kaedah bayaran",
+    depositTitle: "Apa berlaku seterusnya",
+    depositText: "Tiada bayaran diambil di halaman ini.",
+    paymentAria: "Apa berlaku seterusnya",
     summaryAria: "Ringkasan tempahan",
-    depositLabel: "Deposit",
+    depositLabel: "Langkah seterusnya",
     hotline: "Hotline",
     selectedSlot: "Slot pilihan",
-    depositMethod: "Kaedah deposit",
-    consent: "Saya bersetuju Usrah Medic menggunakan butiran ini untuk tempahan, pengendalian deposit, dan notifikasi pesakit.",
-    submit: "Bayar RM10 & hantar tempahan",
+    depositMethod: "Susulan klinik",
+    consent: "Saya bersetuju Usrah Medic menggunakan butiran ini untuk pengendalian janji temu dan notifikasi pesakit.",
+    submit: "Hantar permintaan janji temu",
     defaultReason: "Antenatal follow-up and routine check.",
     services: ["Antenatal follow-up", "2D/3D/4D/5D Ultrasound", "GP consultation", "Haji and Umrah screening", "Saringan kesihatan", "Rawatan keluarga dan kanak-kanak"],
     depositMethods: {
-      fpx: "FPX online banking",
-      ewallet: "eWallet / DuitNow",
-      card: "Kad",
-      counter: "Bayar di kaunter"
+      fpx: "Klinik menyemak permintaan anda",
+      ewallet: "Staf menghubungi untuk sahkan masa akhir",
+      card: "Bawa dokumen sokongan jika perlu",
+      counter: "Bayaran hanya dibuat di klinik jika berkaitan"
     }
   },
   zh: {

@@ -5,71 +5,59 @@ import { branches } from "@usrahmedic/domain";
 import { BranchBadge, PublicTopbar } from "../components/chrome";
 import { useLanguage } from "../components/language";
 
-const heroSlides = [
+const heroImage = "https://usrahmedic.com/wp-content/uploads/2026/04/5.5-WEBSITE-1-scaled.webp";
+
+const promotions = [
   {
-    title: "Kempen Sihat Raya 2026",
-    subtitle: "Promosi kesihatan keluarga yang lebih jelas, lebih pantas, dan lebih moden.",
-    image: "https://usrahmedic.com/wp-content/uploads/2026/04/5.5-WEBSITE-1-scaled.webp",
-    ctaLabel: "Lihat Promosi",
-    ctaHref: "#promosi"
+    title: "Saringan Kesihatan Bakal Haji RM50*",
+    detail: "Sesuai untuk semakan awal sebelum perjalanan dengan doktor keluarga Usrah Medic."
   },
   {
-    title: "Sedut Kahak (Suction)",
-    subtitle: "Servis rawatan yang mudah ditemui dan mudah ditempah oleh pesakit.",
-    image: "https://usrahmedic.com/wp-content/uploads/2026/01/Suction-Sedut-Kahak-Bayi-Desktop-Slider-WEBP-scaled.webp",
-    ctaLabel: "Lihat Perkhidmatan",
-    ctaHref: "#perkhidmatan"
+    title: "Pakej Implanon Ansuran",
+    detail: "Pilihan rawatan wanita dengan penerangan ringkas dan aturan susulan yang jelas."
+  },
+  {
+    title: "Kempen Vaksin Haji & Umrah",
+    detail: "Semak ketersediaan vaksin dan dapatkan nasihat dokumen perjalanan daripada cawangan terdekat."
   }
 ] as const;
 
 const services = [
   {
-    title: "Ultrasound scan 2D/3D/4D/5D",
-    href: "#perkhidmatan",
-    image: "https://usrahmedic.com/wp-content/webp-express/webp-images/uploads/2023/08/ultrasound-2.jpg.webp"
+    title: "Ultrasound 2D / 3D / 4D / 5D",
+    href: "/patient",
+    image: "https://usrahmedic.com/wp-content/webp-express/webp-images/uploads/2023/08/ultrasound-2.jpg.webp",
+    detail: "Untuk ibu mengandung, pemeriksaan susulan, dan temu janji scan mengikut cawangan."
   },
   {
-    title: "Sedut Kahak (Suction)",
-    href: "#perkhidmatan",
-    image: "https://usrahmedic.com/wp-content/webp-express/webp-images/uploads/2023/09/11.jpg.webp"
+    title: "Rawatan GP seisi keluarga",
+    href: "/patient",
+    image: "https://usrahmedic.com/wp-content/webp-express/webp-images/uploads/2023/09/11.jpg.webp",
+    detail: "Demam, batuk, sakit tekak, follow-up penyakit biasa, dan rawatan walk-in."
   },
   {
-    title: "Pakej Saringan Kesihatan",
-    href: "#perkhidmatan",
-    image: "https://usrahmedic.com/wp-content/uploads/2026/04/gambar-saringan.webp"
+    title: "Pakej saringan kesihatan",
+    href: "/patient",
+    image: "https://usrahmedic.com/wp-content/uploads/2026/04/gambar-saringan.webp",
+    detail: "Pemeriksaan umum, darah, tekanan darah, dan semakan awal risiko kesihatan."
   },
   {
-    title: "Paediatric Follow Up",
-    href: "#perkhidmatan",
-    image: "https://usrahmedic.com/wp-content/webp-express/webp-images/uploads/2025/05/kids-play2.jpg.webp"
+    title: "Paediatric follow-up",
+    href: "/patient",
+    image: "https://usrahmedic.com/wp-content/webp-express/webp-images/uploads/2025/05/kids-play2.jpg.webp",
+    detail: "Rawatan dan susulan untuk bayi dan kanak-kanak dengan suasana lebih mesra keluarga."
   }
 ] as const;
 
 const reasons = [
-  "Barisan doktor dan staf yang mesra, komited dan teliti dalam memberi rawatan terbaik.",
-  "Waktu menunggu yang singkat dengan operasi yang lebih tersusun.",
-  "Merupakan klinik 24 jam yang beroperasi setiap hari.",
-  "Pelbagai jenis rawatan untuk semua peringkat umur.",
-  "Khidmat pelanggan yang responsif melalui telefon dan media sosial.",
-  "Sistem temujanji dan aliran pesakit yang lebih moden untuk demo baharu ini."
-] as const;
-
-const promotions = [
-  "Kempen Sihat Raya 2026",
-  "Saringan Kesihatan Bakal Haji RM50* Sahaja",
-  "Pakej Implanon Ansuran",
-  "Kempen Vaksin Haji & Umrah"
-] as const;
-
-const socialLinks = [
-  { label: "Facebook", href: "https://www.facebook.com/" },
-  { label: "Instagram", href: "https://www.instagram.com/" },
-  { label: "TikTok", href: "https://www.tiktok.com/" }
+  "3 cawangan dengan waktu operasi yang jelas untuk pesakit.",
+  "Mudah hubungi klinik melalui telefon atau WhatsApp untuk pengesahan slot.",
+  "Perkhidmatan ibu, bayi, keluarga, ultrasound, dan saringan dalam satu jenama yang sama.",
+  "Sesuai untuk walk-in, temu janji awal, dan susulan rawatan."
 ] as const;
 
 export default function PublicSitePage() {
   useLanguage();
-  const hero = heroSlides[0];
 
   return (
     <div className="app-shell public-site-modern">
@@ -78,88 +66,65 @@ export default function PublicSitePage() {
         <section className="marketing-hero" id="top">
           <div className="marketing-hero-copy">
             <span className="eyebrow">Usrah Medic 24 Jam</span>
-            <h1>Laman utama moden untuk Usrah Medic, dibina semula dari asas jenama sedia ada.</h1>
+            <h1>Klinik keluarga untuk ibu, bayi, kanak-kanak, dan seisi keluarga.</h1>
             <p>
-              Demo ini mengekalkan identiti semasa Usrah Medic — promosi, servis utama, panel, cawangan, dan hubungan mesra
-              pesakit — tetapi dengan pengalaman yang lebih moden, pantas, dan sesuai untuk diperluaskan bersama sistem klinik.
+              Usrah Medic membantu pesakit mendapatkan rawatan umum, ultrasound, antenatal follow-up, saringan kesihatan,
+              dan khidmat keluarga dengan cara yang lebih jelas dan lebih mudah dihubungi.
             </p>
             <div className="hero-actions">
-              <Link className="primary-action" href={hero.ctaHref}>
-                {hero.ctaLabel}
+              <Link className="primary-action" href="/patient">
+                Tempah janji temu
               </Link>
-              <Link className="secondary-action" href="/patient">
-                Tempah Janji Temu
-              </Link>
+              <a className="secondary-action" href="https://wa.me/601135664998" rel="noreferrer" target="_blank">
+                WhatsApp kami
+              </a>
             </div>
             <div className="hero-mini-cards">
               <article className="mini-card">
-                <strong>3 Cawangan</strong>
-                <span>Struktur semasa, sedia untuk berkembang.</span>
+                <strong>{branches.length} cawangan</strong>
+                <span>Pilih lokasi yang paling dekat dengan anda.</span>
               </article>
               <article className="mini-card">
-                <strong>24 Jam</strong>
-                <span>Maklumat utama yang jelas untuk pesakit.</span>
+                <strong>24 jam terpilih</strong>
+                <span>Puncak Alam dan Seremban 2 beroperasi 24 jam.</span>
               </article>
               <article className="mini-card">
-                <strong>Cloudflare Demo</strong>
-                <span>Lebih pantas berbanding WordPress semasa.</span>
+                <strong>Walk-in atau request slot</strong>
+                <span>Klinik akan hubungi untuk sahkan masa lawatan anda.</span>
               </article>
             </div>
           </div>
           <div className="marketing-hero-media">
-            <img alt="Promosi semasa Usrah Medic" src={hero.image} />
+            <img alt="Promosi semasa Usrah Medic" src={heroImage} />
           </div>
         </section>
 
         <section className="section promo-strip" id="promosi">
           <div className="section-heading left-aligned">
             <div>
-              <h2>Promosi Terkini</h2>
-              <p>Konsep carousel dan kempen promosi dikekalkan, tetapi dipersembahkan semula dengan susun atur yang lebih moden.</p>
+              <h2>Promosi semasa</h2>
+              <p>Semakan pantas untuk pakej dan kempen yang sering ditanya pesakit.</p>
             </div>
           </div>
           <div className="promo-grid">
             {promotions.map((promotion) => (
-              <article className="promo-card" key={promotion}>
+              <article className="promo-card" key={promotion.title}>
                 <span className="promo-pill">Promosi</span>
-                <h3>{promotion}</h3>
-                <p>Blok promosi ini boleh diurus sebagai kandungan berstruktur dan dikitar semula di homepage, landing page, dan kempen khas.</p>
+                <h3>{promotion.title}</h3>
+                <p>{promotion.detail}</p>
               </article>
             ))}
           </div>
         </section>
 
-        <section className="section" id="perkhidmatan">
+        <section className="section" id="tentang">
           <div className="section-heading left-aligned">
             <div>
-              <h2>Apa Yang Kami Tawarkan</h2>
-              <p>Servis utama daripada laman semasa dikekalkan sebagai kad visual yang lebih kemas dan lebih mudah diteroka.</p>
-            </div>
-            <Link className="secondary-action" href="#panel">
-              Lihat Panel
-            </Link>
-          </div>
-          <div className="service-grid-modern">
-            {services.map((service) => (
-              <article className="service-card-modern" key={service.title}>
-                <img alt={service.title} src={service.image} />
-                <div className="service-card-body">
-                  <span className="service-chip">Perkhidmatan Popular</span>
-                  <h3>{service.title}</h3>
-                  <Link className="service-link" href={service.href}>
-                    Lihat Butiran
-                  </Link>
-                </div>
-              </article>
-            ))}
-          </div>
-        </section>
-
-        <section className="section reasons-section" id="tentang">
-          <div className="section-heading left-aligned">
-            <div>
-              <h2>Mengapa Memilih Kami</h2>
-              <p>Bahagian ini mengekalkan mesej utama laman semasa tetapi disusun semula dengan gaya yang lebih profesional dan mudah dibaca.</p>
+              <h2>Tentang Usrah Medic</h2>
+              <p>
+                Fokus utama kami ialah rawatan yang cepat dihubungi, maklumat cawangan yang jelas, dan pengalaman pesakit
+                yang lebih kemas dari pertanyaan awal hingga lawatan ke klinik.
+              </p>
             </div>
           </div>
           <div className="reasons-layout">
@@ -171,24 +136,53 @@ export default function PublicSitePage() {
                 </article>
               ))}
             </div>
-            <div className="doctor-visual-card" id="doktor">
+            <div className="doctor-visual-card">
               <img
                 alt="Doktor dan staf Usrah Medic"
                 src="https://usrahmedic.com/wp-content/webp-express/webp-images/uploads/2026/04/Untitled-design.png.webp"
               />
               <div>
-                <h3>Profil doktor dan staf dengan gaya baharu</h3>
-                <p>Halaman profil doktor boleh dibina semula menggunakan tema yang sama supaya pengalaman awam dan sistem dalaman kekal konsisten.</p>
+                <h3>Mesra keluarga dan mudah dihubungi</h3>
+                <p>
+                  Sesuai untuk ibu mengandung, bayi, kanak-kanak, pesakit susulan, dan rawatan keluarga harian.
+                </p>
               </div>
             </div>
+          </div>
+        </section>
+
+        <section className="section" id="perkhidmatan">
+          <div className="section-heading left-aligned">
+            <div>
+              <h2>Perkhidmatan utama</h2>
+              <p>Servis yang paling kerap dicari pesakit di Usrah Medic.</p>
+            </div>
+            <Link className="secondary-action" href="/patient">
+              Hantar permintaan temu janji
+            </Link>
+          </div>
+          <div className="service-grid-modern">
+            {services.map((service) => (
+              <article className="service-card-modern" key={service.title}>
+                <img alt={service.title} src={service.image} />
+                <div className="service-card-body">
+                  <span className="service-chip">Perkhidmatan</span>
+                  <h3>{service.title}</h3>
+                  <p>{service.detail}</p>
+                  <Link className="service-link" href={service.href}>
+                    Minta slot
+                  </Link>
+                </div>
+              </article>
+            ))}
           </div>
         </section>
 
         <section className="section branches-section" id="rangkaian">
           <div className="section-heading left-aligned">
             <div>
-              <h2>Rangkaian Kami</h2>
-              <p>Maklumat cawangan dijadikan kandungan berstruktur supaya boleh dikongsi antara laman awam, tempahan, dan sistem operasi.</p>
+              <h2>Cawangan kami</h2>
+              <p>Pilih cawangan, semak waktu operasi, dan hubungi hotline terus.</p>
             </div>
           </div>
           <div className="grid grid-3 branch-grid-modern">
@@ -197,14 +191,10 @@ export default function PublicSitePage() {
                 <BranchBadge label={branch.area} />
                 <h3>{branch.name}</h3>
                 <p>{branch.hours}</p>
-                <p>{branch.hotline}</p>
-                <div className="pill-row">
-                  {branch.services.slice(0, 4).map((service) => (
-                    <span className="pill" key={service}>
-                      {service}
-                    </span>
-                  ))}
-                </div>
+                <p>{branch.services.slice(0, 4).join(" • ")}</p>
+                <a className="service-link" href={`tel:${branch.hotline.replace(/[^+\d]/g, "")}`}>
+                  Hubungi {branch.hotline}
+                </a>
               </article>
             ))}
           </div>
@@ -213,8 +203,8 @@ export default function PublicSitePage() {
         <section className="section panel-showcase" id="panel">
           <div className="section-heading left-aligned">
             <div>
-              <h2>Panel Klinik Berdaftar</h2>
-              <p>Logo panel sedia ada boleh dikekalkan dan dipersembahkan dalam seksyen yang lebih bersih untuk meningkatkan kepercayaan pesakit dan korporat.</p>
+              <h2>Panel klinik berdaftar</h2>
+              <p>Maklumat panel dipaparkan dengan ringkas supaya pesakit dan syarikat mudah membuat semakan awal.</p>
             </div>
           </div>
           <div className="panel-visual-card">
@@ -222,28 +212,34 @@ export default function PublicSitePage() {
           </div>
         </section>
 
-        <section className="section system-route-showcase" id="info-kesihatan">
+        <section className="section system-route-showcase" id="hubungi">
           <div className="section-heading left-aligned">
             <div>
-              <h2>Laman Awam + Sistem Klinik</h2>
-              <p>Homepage ini akan menjadi sambungan tema yang sama untuk route awam dan route sistem, bukan dua produk yang nampak berbeza.</p>
+              <h2>Hubungi Usrah Medic</h2>
+              <p>
+                Jika anda belum pasti slot yang sesuai, hantar permintaan dahulu atau hubungi cawangan melalui telefon dan
+                WhatsApp untuk pengesahan.
+              </p>
             </div>
           </div>
           <div className="route-grid">
             <article className="route-card">
-              <span className="route-chip">Awam</span>
-              <h3>Promosi, servis, panel, cawangan</h3>
-              <p>Laman utama, promosi, doctor profile, perkhidmatan, info kesihatan, dan halaman kerjaya boleh kekal di bawah tema ini.</p>
+              <span className="route-chip">Temu janji</span>
+              <h3>Hantar permintaan slot</h3>
+              <p>Pilih cawangan, servis, dan masa pilihan. Klinik akan hubungi untuk pengesahan akhir.</p>
+              <Link className="service-link" href="/patient">Buka borang temu janji</Link>
             </article>
             <article className="route-card">
-              <span className="route-chip">Pesakit</span>
-              <h3>/patient</h3>
-              <p>Tempahan janji temu, semakan cawangan, notifikasi, dan pengalaman pesakit boleh dibina pada route khusus tetapi masih dalam identiti jenama yang sama.</p>
+              <span className="route-chip">WhatsApp</span>
+              <h3>Balas lebih cepat untuk pertanyaan ringkas</h3>
+              <p>Sesuaai untuk semakan awal tentang servis, waktu operasi, atau pertanyaan lokasi cawangan.</p>
+              <a className="service-link" href="https://wa.me/601135664998" rel="noreferrer" target="_blank">WhatsApp sekarang</a>
             </article>
             <article className="route-card">
-              <span className="route-chip">Operasi</span>
-              <h3>/admin · /medicine · /insight</h3>
-              <p>Operasi dalaman, farmasi, billing, dan dashboard pemilik kekal berasingan tetapi tetap serasi secara visual dengan laman awam.</p>
+              <span className="route-chip">Telefon</span>
+              <h3>Call cawangan terus</h3>
+              <p>Untuk pesakit yang perlukan pengesahan segera tentang waktu lawatan atau ketersediaan perkhidmatan.</p>
+              <a className="service-link" href="tel:+601135664998">011-3566 4998</a>
             </article>
           </div>
         </section>
@@ -252,54 +248,28 @@ export default function PublicSitePage() {
       <footer className="modern-footer">
         <div className="modern-footer-grid">
           <div>
-            <h3>Menu Utama</h3>
+            <h3>Usrah Medic</h3>
+            <p>Klinik keluarga untuk rawatan umum, antenatal, ultrasound, saringan kesihatan, dan penjagaan seisi keluarga.</p>
+          </div>
+          <div>
+            <h3>Pautan pantas</h3>
             <ul>
-              <li><Link href="#top">Laman Utama</Link></li>
               <li><Link href="#promosi">Promosi</Link></li>
-              <li><Link href="#tentang">Siapa Kami</Link></li>
-              <li><Link href="#panel">Panel</Link></li>
               <li><Link href="#perkhidmatan">Perkhidmatan</Link></li>
-              <li><Link href="#rangkaian">Rangkaian Kami</Link></li>
+              <li><Link href="#rangkaian">Cawangan</Link></li>
+              <li><Link href="/patient">Temu janji</Link></li>
             </ul>
           </div>
           <div>
-            <h3>Perkhidmatan</h3>
-            <ul>
-              {services.map((service) => (
-                <li key={service.title}>
-                  <Link href="#perkhidmatan">{service.title}</Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-          <div>
-            <h3>Promosi Terkini</h3>
-            <ul>
-              {promotions.map((promotion) => (
-                <li key={promotion}>{promotion}</li>
-              ))}
-            </ul>
-          </div>
-          <div>
-            <h3>Klinik Usrah Medic 24 Jam (HQ)</h3>
-            <p>No.28 & 28A, Jalan Niaga Bestari 8, Persiaran Puncak Bestari 2, Bandar Puncak Alam, 42300 Kuala Selangor.</p>
+            <h3>Hubungi</h3>
             <p>011-3566 4998</p>
             <p>admin@usrahmedic.com</p>
-          </div>
-          <div id="sertai-kami">
-            <h3>Media Sosial</h3>
-            <ul>
-              {socialLinks.map((link) => (
-                <li key={link.label}>
-                  <a href={link.href} target="_blank" rel="noreferrer">{link.label}</a>
-                </li>
-              ))}
-            </ul>
+            <p>No.28 & 28A, Jalan Niaga Bestari 8, Bandar Puncak Alam, Kuala Selangor.</p>
           </div>
         </div>
         <div className="footer-bottom">
           <span>Dasar Privasi</span>
-          <span>Copyright © Usrah Medic 2023 Dimiliki oleh Imtiyaz Assyifa Healthcare Sdn. Bhd. (1376669-D)</span>
+          <span>Copyright © Usrah Medic</span>
         </div>
       </footer>
 

@@ -1,8 +1,8 @@
 "use client";
 
 import type { ReactNode } from "react";
-import { useEffect, useRef, useState } from "react";
-import { AlertCircle, CalendarCheck, CheckCircle2, Download, LoaderCircle, LockKeyhole, PackagePlus, QrCode, ShieldCheck, UserPlus, WalletCards, WifiOff } from "lucide-react";
+import { useRef, useState } from "react";
+import { AlertCircle, CalendarCheck, CheckCircle2, Download, LoaderCircle, PackagePlus, QrCode, ShieldCheck, UserPlus, WalletCards, WifiOff } from "lucide-react";
 import { usePatientBookingCopy } from "./language";
 
 type PanelKind = "admin" | "medicine" | "insight" | "patient" | "staff" | "claims";
@@ -58,8 +58,8 @@ const loadingState: Record<PanelKind, ActionState> = {
     tone: "loading"
   },
   patient: {
-    title: "Menghantar tempahan",
-    detail: "Kami sedang menyimpan butiran pesakit, slot pilihan, dan deposit RM10.",
+    title: "Menghantar permintaan janji temu",
+    detail: "Kami sedang menyimpan butiran anda dan slot pilihan untuk semakan klinik.",
     tone: "loading"
   },
   staff: {
@@ -96,8 +96,8 @@ const initialState: Record<PanelKind, ActionState> = {
     tone: "idle"
   },
   patient: {
-    title: "Sedia untuk tempahan",
-    detail: "Semak butiran pesakit, pilih slot, kemudian sahkan deposit RM10.",
+    title: "Sedia untuk hantar permintaan",
+    detail: "Isi butiran pesakit, pilih slot pilihan, dan hantar permintaan kepada klinik.",
     tone: "idle"
   },
   staff: {
@@ -449,25 +449,17 @@ export function PatientBookingAction() {
   const [serviceIndex, setServiceIndex] = useState(0);
   const [appointmentDate, setAppointmentDate] = useState(defaultAppointmentDate());
   const [appointmentTime, setAppointmentTime] = useState("10:00");
-  const [isLoggedIn, setIsLoggedIn] = useState(true);
-  const [fullName, setFullName] = useState(savedPatientProfile.fullName);
-  const [phone, setPhone] = useState(savedPatientProfile.phoneE164);
-  const [email, setEmail] = useState(savedPatientProfile.email);
-  const [nationalIdLast4, setNationalIdLast4] = useState(savedPatientProfile.nationalIdLast4);
-  const [dateOfBirth, setDateOfBirth] = useState(savedPatientProfile.dateOfBirth);
-  const [sex, setSex] = useState(savedPatientProfile.sex);
+  const [fullName, setFullName] = useState("");
+  const [phone, setPhone] = useState("");
+  const [email, setEmail] = useState("");
+  const [nationalIdLast4, setNationalIdLast4] = useState("");
+  const [dateOfBirth, setDateOfBirth] = useState("");
+  const [sex, setSex] = useState("unknown");
   const [visitReason, setVisitReason] = useState<string>(copy.defaultReason);
-  const [depositMethod, setDepositMethod] = useState<DepositMethod>("fpx");
   const [hasConsent, setHasConsent] = useState(true);
   const [state, setState] = useState<ActionState>({ ...copy.initial, tone: "idle" });
   const branchInfo = patientBranches.find((item) => item.name === branch) ?? patientBranches[0];
   const service = copy.services[serviceIndex] ?? copy.services[0];
-  const selectedDepositMethod = copy.depositMethods[depositMethod];
-
-  useEffect(() => {
-    setState((current) => (current.tone === "idle" ? { ...copy.initial, tone: "idle" } : current));
-    setVisitReason((current) => (allDefaultVisitReasons.has(current) ? copy.defaultReason : current));
-  }, [copy]);
 
   return (
     <div className="booking-card" id="book">
@@ -492,42 +484,6 @@ export function PatientBookingAction() {
         <span className="active">{copy.progress[0]}</span>
         <span>{copy.progress[1]}</span>
         <span>{copy.progress[2]}</span>
-      </div>
-
-      <div className="profile-strip">
-        <div>
-          <span className="pill brand-pill">
-            <LockKeyhole size={14} aria-hidden="true" />
-            {isLoggedIn ? copy.loggedIn : copy.newPatient}
-          </span>
-          <strong>{isLoggedIn ? copy.profileFilled : copy.profileEmpty}</strong>
-          <p>{isLoggedIn ? copy.profileFilledText : copy.profileEmptyText}</p>
-        </div>
-        <button
-          className="secondary-action"
-          type="button"
-          onClick={() => {
-            const nextValue = !isLoggedIn;
-            setIsLoggedIn(nextValue);
-            if (nextValue) {
-              setFullName(savedPatientProfile.fullName);
-              setPhone(savedPatientProfile.phoneE164);
-              setEmail(savedPatientProfile.email);
-              setNationalIdLast4(savedPatientProfile.nationalIdLast4);
-              setDateOfBirth(savedPatientProfile.dateOfBirth);
-              setSex(savedPatientProfile.sex);
-            } else {
-              setFullName("");
-              setPhone("");
-              setEmail("");
-              setNationalIdLast4("");
-              setDateOfBirth("");
-              setSex("unknown");
-            }
-          }}
-        >
-          {isLoggedIn ? copy.bookOther : copy.useProfile}
-        </button>
       </div>
 
       <form
@@ -566,10 +522,7 @@ export function PatientBookingAction() {
               note: visitReason
             },
             deposit: {
-              required: true,
-              amountCents: 1000,
-              currency: "MYR",
-              method: depositMethod
+              required: false
             }
           });
 
@@ -577,7 +530,7 @@ export function PatientBookingAction() {
             title: result.kind === "error" ? copy.rejectedTitle : copy.acceptedTitle,
             detail:
               result.kind === "success"
-                ? `${copy.successDetail(service, branch, selectedDepositMethod)}${formatRequestId(result.requestId)}`
+                ? `${copy.successDetail(service, branch, "")}${formatRequestId(result.requestId)}`
                 : result.kind === "fallback"
                   ? copy.fallbackDetail(service, branch, localizedPatientFallbackReason(result.reason, copy))
                   : `${result.message}. ${copy.retrySuffix}`,
@@ -598,15 +551,15 @@ export function PatientBookingAction() {
               <div className="booking-grid">
                 <label className="field">
                   <span>{copy.fields.fullName}</span>
-                  <input value={fullName} onChange={(event) => setFullName(event.target.value)} placeholder="Nur Aina Binti Abdullah" required />
+                  <input value={fullName} onChange={(event) => setFullName(event.target.value)} placeholder="Nama seperti dalam IC / passport" required />
                 </label>
                 <label className="field">
                   <span>{copy.fields.phone}</span>
-                  <input value={phone} onChange={(event) => setPhone(event.target.value)} placeholder="+60123456789" required />
+                  <input value={phone} onChange={(event) => setPhone(event.target.value)} placeholder="+6012XXXXXXX" required />
                 </label>
                 <label className="field">
                   <span>{copy.fields.email}</span>
-                  <input type="email" value={email} onChange={(event) => setEmail(event.target.value)} placeholder="aina@example.com" />
+                  <input type="email" value={email} onChange={(event) => setEmail(event.target.value)} placeholder="anda@email.com" />
                 </label>
                 <label className="field">
                   <span>{copy.fields.idLast4}</span>
@@ -682,16 +635,11 @@ export function PatientBookingAction() {
                 </div>
               </div>
               <div className="deposit-options" aria-label={copy.paymentAria}>
-                {depositMethods.map((method) => (
-                  <button
-                    className={depositMethod === method.value ? "deposit-option active" : "deposit-option"}
-                    key={method.value}
-                    type="button"
-                    onClick={() => setDepositMethod(method.value)}
-                  >
-                    <WalletCards size={18} aria-hidden="true" />
-                    <span>{copy.depositMethods[method.value]}</span>
-                  </button>
+                {Object.values(copy.depositMethods).map((item) => (
+                  <div className="deposit-option active" key={item}>
+                    <ShieldCheck size={18} aria-hidden="true" />
+                    <span>{item}</span>
+                  </div>
                 ))}
               </div>
             </section>
@@ -700,7 +648,7 @@ export function PatientBookingAction() {
           <aside className="booking-summary" aria-label={copy.summaryAria}>
             <div className="summary-total">
               <span>{copy.depositLabel}</span>
-              <strong>RM10.00</strong>
+              <strong>{copy.depositText}</strong>
             </div>
             <dl>
               <div>
@@ -721,7 +669,7 @@ export function PatientBookingAction() {
               </div>
               <div>
                 <dt>{copy.depositMethod}</dt>
-                <dd>{selectedDepositMethod}</dd>
+                <dd>{copy.depositMethods.fpx}</dd>
               </div>
             </dl>
             <label className="checkbox-field">
@@ -951,34 +899,10 @@ function nextAppointmentSlot() {
   return slot;
 }
 
-type DepositMethod = "fpx" | "ewallet" | "card" | "counter";
-
 const patientBranches = [
   { id: "puncak-alam", name: "Puncak Alam", hotline: "011-3566 4998" },
   { id: "bukit-jelutong", name: "Bukit Jelutong", hotline: "012-445 4998" },
   { id: "seremban-2", name: "Seremban 2", hotline: "011-1130 4998" }
-];
-
-const savedPatientProfile = {
-  fullName: "Nur Aina Binti Abdullah",
-  phoneE164: "+60123456789",
-  email: "aina@example.com",
-  nationalIdLast4: "4321",
-  dateOfBirth: "1992-05-18",
-  sex: "female"
-};
-
-const allDefaultVisitReasons = new Set([
-  "Antenatal follow-up and routine check.",
-  "产前复诊和常规检查。",
-  "கர்ப்ப follow-up மற்றும் வழக்கமான பரிசோதனை."
-]);
-
-const depositMethods: Array<{ label: string; value: DepositMethod }> = [
-  { label: "FPX online banking", value: "fpx" },
-  { label: "eWallet / DuitNow", value: "ewallet" },
-  { label: "Card", value: "card" },
-  { label: "Pay at counter", value: "counter" }
 ];
 
 const payerOptions = [

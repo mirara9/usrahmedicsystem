@@ -1,6 +1,6 @@
 "use client";
 
-import { Clock3, HeartPulse, MapPin, Phone, ShieldCheck, Sparkles, Stethoscope, WalletCards } from "lucide-react";
+import { Clock3, HeartPulse, MapPin, Phone, ShieldCheck, Sparkles, Stethoscope } from "lucide-react";
 import { branches } from "@usrahmedic/domain";
 import { PatientBookingAction } from "../../components/actions";
 import { PublicTopbar } from "../../components/chrome";
@@ -25,7 +25,7 @@ export default function PatientPage() {
             <p>{copy.heroText}</p>
             <div className="patient-trust-row" aria-label="Booking highlights">
               <span><Clock3 size={17} aria-hidden="true" /> {copy.open24}</span>
-              <span><WalletCards size={17} aria-hidden="true" /> {copy.deposit}</span>
+              <span><ShieldCheck size={17} aria-hidden="true" /> {copy.requestOnly}</span>
               <span><MapPin size={17} aria-hidden="true" /> {branches.length} {copy.branchCount}</span>
             </div>
             <div className="patient-hero-photo" aria-label={copy.heroPhotoLabel} />
