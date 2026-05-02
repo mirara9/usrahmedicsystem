@@ -1,6 +1,6 @@
 "use client";
 
-import { Clock3, MapPin, Phone, ShieldCheck, Sparkles } from "lucide-react";
+import { Clock3, MapPin, ShieldCheck, Sparkles } from "lucide-react";
 import { branches } from "@usrahmedic/domain";
 import { PatientBookingAction } from "../../components/actions";
 import { PublicTopbar } from "../../components/chrome";
@@ -35,19 +35,6 @@ export default function PatientPage() {
           </div>
         </section>
 
-        <section className="patient-section branch-band" aria-label={copy.branchAria}>
-          {branches.map((branch) => (
-            <article key={branch.id}>
-              <span className="pill brand-pill">{branch.hours}</span>
-              <h3>{branch.name}</h3>
-              <p>{branch.services.slice(0, 4).join(", ")}</p>
-              <a href={`tel:${branch.hotline.replace(/[^+\d]/g, "")}`}>
-                <Phone size={16} aria-hidden="true" />
-                {branch.hotline}
-              </a>
-            </article>
-          ))}
-        </section>
       </main>
     </div>
   );

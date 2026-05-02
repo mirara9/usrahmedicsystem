@@ -27,6 +27,7 @@ describe("public site cleanup", () => {
   it("turns patient booking into an appointment request instead of fake payment flow", () => {
     const actions = read("components/actions.tsx");
     const patientPage = read("app/patient/page.tsx");
+    const language = read("components/language.tsx");
 
     expect(actions).not.toContain("Deposit RM10");
     expect(actions).not.toContain("FPX online banking");
@@ -34,5 +35,17 @@ describe("public site cleanup", () => {
     expect(actions).not.toContain('title: "Menghantar tempahan"');
     expect(actions).not.toContain("Nur Aina Binti Abdullah");
     expect(patientPage).not.toContain("Deposit RM10");
+    expect(language).not.toContain("RM10");
+    expect(language).not.toContain("订金");
+    expect(language).not.toContain("前缴");
+  });
+
+  it("keeps the patient flow compact and step-based instead of one long admin form", () => {
+    const actions = read("components/actions.tsx");
+    const patientPage = read("app/patient/page.tsx");
+
+    expect(actions).toContain("const [currentStep, setCurrentStep]");
+    expect(actions).not.toContain('className="booking-progress"');
+    expect(patientPage).not.toContain("branch-band");
   });
 });

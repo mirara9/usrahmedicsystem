@@ -457,9 +457,36 @@ export function PatientBookingAction() {
   const [sex, setSex] = useState("unknown");
   const [visitReason, setVisitReason] = useState<string>(copy.defaultReason);
   const [hasConsent, setHasConsent] = useState(true);
+  const [currentStep, setCurrentStep] = useState(0);
   const [state, setState] = useState<ActionState>({ ...copy.initial, tone: "idle" });
   const branchInfo = patientBranches.find((item) => item.name === branch) ?? patientBranches[0];
   const service = copy.services[serviceIndex] ?? copy.services[0];
+
+  function moveToPatientStep() {
+    if (!appointmentDate || !appointmentTime) {
+      setState({
+        title: copy.incompleteTitle,
+        detail: copy.incompleteDetail,
+        tone: "error"
+      });
+      return;
+    }
+
+    setCurrentStep(1);
+  }
+
+  function moveToReviewStep() {
+    if (!fullName.trim() || !phone.trim()) {
+      setState({
+        title: copy.incompleteTitle,
+        detail: copy.incompleteDetail,
+        tone: "error"
+      });
+      return;
+    }
+
+    setCurrentStep(2);
+  }
 
   return (
     <div className="booking-card" id="book">
@@ -480,10 +507,22 @@ export function PatientBookingAction() {
         </div>
       </div>
 
-      <div className="booking-progress" aria-label="Booking progress">
-        <span className="active">{copy.progress[0]}</span>
-        <span>{copy.progress[1]}</span>
-        <span>{copy.progress[2]}</span>
+      <div className="booking-stepper" aria-label="Booking steps">
+        {copy.progress.map((label, index) => (
+          <button
+            key={label}
+            type="button"
+            className={index === currentStep ? "active" : index < currentStep ? "complete" : ""}
+            onClick={() => {
+              if (index <= currentStep) {
+                setCurrentStep(index);
+              }
+            }}
+          >
+            <strong>{index + 1}</strong>
+            <span>{label}</span>
+          </button>
+        ))}
       </div>
 
       <form
@@ -540,147 +579,187 @@ export function PatientBookingAction() {
       >
         <div className="booking-layout">
           <div className="booking-main">
-            <section className="booking-section">
-              <div className="booking-section-heading">
-                <span>1</span>
-                <div>
-                  <h3>{copy.patientSectionTitle}</h3>
-                  <p>{copy.patientSectionText}</p>
-                </div>
-              </div>
-              <div className="booking-grid">
-                <label className="field">
-                  <span>{copy.fields.fullName}</span>
-                  <input value={fullName} onChange={(event) => setFullName(event.target.value)} placeholder="Nama seperti dalam IC / passport" required />
-                </label>
-                <label className="field">
-                  <span>{copy.fields.phone}</span>
-                  <input value={phone} onChange={(event) => setPhone(event.target.value)} placeholder="+6012XXXXXXX" required />
-                </label>
-                <label className="field">
-                  <span>{copy.fields.email}</span>
-                  <input type="email" value={email} onChange={(event) => setEmail(event.target.value)} placeholder="anda@email.com" />
-                </label>
-                <label className="field">
-                  <span>{copy.fields.idLast4}</span>
-                  <input value={nationalIdLast4} onChange={(event) => setNationalIdLast4(event.target.value.slice(0, 4))} inputMode="numeric" placeholder="1234" />
-                </label>
-                <label className="field">
-                  <span>{copy.fields.dob}</span>
-                  <input type="date" value={dateOfBirth} onChange={(event) => setDateOfBirth(event.target.value)} />
-                </label>
-                <label className="field">
-                  <span>{copy.fields.sex}</span>
-                  <select value={sex} onChange={(event) => setSex(event.target.value)}>
-                    <option value="female">{copy.sex.female}</option>
-                    <option value="male">{copy.sex.male}</option>
-                    <option value="unknown">{copy.sex.unknown}</option>
-                  </select>
-                </label>
-              </div>
-            </section>
-
-            <section className="booking-section">
-              <div className="booking-section-heading">
-                <span>2</span>
-                <div>
-                  <h3>{copy.slotTitle}</h3>
-                  <p>{copy.slotText}</p>
-                </div>
-              </div>
-              <div className="booking-grid">
-                <label className="field">
-                  <span>{copy.branch}</span>
-                  <select value={branch} onChange={(event) => setBranch(event.target.value)}>
-                    {patientBranches.map((item) => (
-                      <option key={item.id}>{item.name}</option>
-                    ))}
-                  </select>
-                </label>
-                <label className="field">
-                  <span>{copy.service}</span>
-                  <select value={serviceIndex} onChange={(event) => setServiceIndex(Number.parseInt(event.target.value, 10))}>
-                    {copy.services.map((serviceOption, index) => (
-                      <option key={serviceOption} value={index}>{serviceOption}</option>
-                    ))}
-                  </select>
-                </label>
-                <label className="field">
-                  <span>{copy.appointmentDate}</span>
-                  <input type="date" min={todayDateInputValue()} value={appointmentDate} onChange={(event) => setAppointmentDate(event.target.value)} required />
-                </label>
-                <label className="field">
-                  <span>{copy.preferredTime}</span>
-                  <select value={appointmentTime} onChange={(event) => setAppointmentTime(event.target.value)}>
-                    <option value="09:00">9:00 AM</option>
-                    <option value="10:00">10:00 AM</option>
-                    <option value="11:30">11:30 AM</option>
-                    <option value="14:30">2:30 PM</option>
-                    <option value="20:00">8:00 PM</option>
-                  </select>
-                </label>
-                <label className="field field-wide">
-                  <span>{copy.fields.visitReason}</span>
-                  <textarea value={visitReason} onChange={(event) => setVisitReason(event.target.value)} placeholder={copy.visitPlaceholder} rows={3} />
-                </label>
-              </div>
-            </section>
-
-            <section className="booking-section">
-              <div className="booking-section-heading">
-                <span>3</span>
-                <div>
-                  <h3>{copy.depositTitle}</h3>
-                  <p>{copy.depositText}</p>
-                </div>
-              </div>
-              <div className="next-steps-list" aria-label={copy.paymentAria}>
-                {Object.values(copy.depositMethods).map((item) => (
-                  <div className="next-step-item" key={item}>
-                    <ShieldCheck size={18} aria-hidden="true" />
-                    <span>{item}</span>
+            {currentStep === 0 ? (
+              <section className="booking-section booking-step-card">
+                <div className="booking-section-heading">
+                  <span>1</span>
+                  <div>
+                    <h3>{copy.slotTitle}</h3>
+                    <p>{copy.slotText}</p>
                   </div>
-                ))}
-              </div>
-            </section>
-          </div>
+                </div>
+                <div className="booking-grid">
+                  <label className="field">
+                    <span>{copy.branch}</span>
+                    <select value={branch} onChange={(event) => setBranch(event.target.value)}>
+                      {patientBranches.map((item) => (
+                        <option key={item.id}>{item.name}</option>
+                      ))}
+                    </select>
+                  </label>
+                  <label className="field">
+                    <span>{copy.service}</span>
+                    <select value={serviceIndex} onChange={(event) => setServiceIndex(Number.parseInt(event.target.value, 10))}>
+                      {copy.services.map((serviceOption, index) => (
+                        <option key={serviceOption} value={index}>{serviceOption}</option>
+                      ))}
+                    </select>
+                  </label>
+                  <label className="field">
+                    <span>{copy.appointmentDate}</span>
+                    <input type="date" min={todayDateInputValue()} value={appointmentDate} onChange={(event) => setAppointmentDate(event.target.value)} required />
+                  </label>
+                  <label className="field">
+                    <span>{copy.preferredTime}</span>
+                    <select value={appointmentTime} onChange={(event) => setAppointmentTime(event.target.value)}>
+                      <option value="09:00">9:00 AM</option>
+                      <option value="10:00">10:00 AM</option>
+                      <option value="11:30">11:30 AM</option>
+                      <option value="14:30">2:30 PM</option>
+                      <option value="20:00">8:00 PM</option>
+                    </select>
+                  </label>
+                  <label className="field field-wide">
+                    <span>{copy.fields.visitReason}</span>
+                    <textarea value={visitReason} onChange={(event) => setVisitReason(event.target.value)} placeholder={copy.visitPlaceholder} rows={3} />
+                  </label>
+                </div>
+                <aside className="booking-inline-note">
+                  <div>
+                    <strong>{branch}</strong>
+                    <p>{branchInfo.hotline}</p>
+                  </div>
+                  <button className="primary-action patient-step-action" onClick={moveToPatientStep} type="button">
+                    {copy.nextButton}
+                  </button>
+                </aside>
+              </section>
+            ) : null}
 
-          <aside className="booking-summary" aria-label={copy.summaryAria}>
-            <div className="summary-total compact-summary-note">
-              <span>{copy.depositLabel}</span>
-              <strong>{copy.depositText}</strong>
-            </div>
-            <dl>
-              <div>
-                <dt>{copy.branch}</dt>
-                <dd>{branch}</dd>
-              </div>
-              <div>
-                <dt>{copy.hotline}</dt>
-                <dd>{branchInfo.hotline}</dd>
-              </div>
-              <div>
-                <dt>{copy.service}</dt>
-                <dd>{service}</dd>
-              </div>
-              <div>
-                <dt>{copy.selectedSlot}</dt>
-                <dd>{appointmentDate} / {appointmentTime}</dd>
-              </div>
-              <div>
-                <dt>{copy.depositMethod}</dt>
-                <dd>{copy.depositMethods.fpx}</dd>
-              </div>
-            </dl>
-            <label className="checkbox-field">
-              <input checked={hasConsent} onChange={(event) => setHasConsent(event.target.checked)} type="checkbox" />
-              <span>{copy.consent}</span>
-            </label>
-            <button className="primary-action patient-submit" type="submit">
-              <ShieldCheck size={18} aria-hidden="true" />
-              {copy.submit}
-            </button>
-          </aside>
+            {currentStep === 1 ? (
+              <section className="booking-section booking-step-card">
+                <div className="booking-section-heading">
+                  <span>2</span>
+                  <div>
+                    <h3>{copy.patientSectionTitle}</h3>
+                    <p>{copy.patientSectionText}</p>
+                  </div>
+                </div>
+                <div className="booking-grid">
+                  <label className="field">
+                    <span>{copy.fields.fullName}</span>
+                    <input value={fullName} onChange={(event) => setFullName(event.target.value)} placeholder="Nama seperti dalam IC / passport" required />
+                  </label>
+                  <label className="field">
+                    <span>{copy.fields.phone}</span>
+                    <input value={phone} onChange={(event) => setPhone(event.target.value)} placeholder="+6012XXXXXXX" required />
+                  </label>
+                  <label className="field">
+                    <span>{copy.fields.email}</span>
+                    <input type="email" value={email} onChange={(event) => setEmail(event.target.value)} placeholder="anda@email.com" />
+                  </label>
+                  <label className="field">
+                    <span>{copy.fields.idLast4}</span>
+                    <input value={nationalIdLast4} onChange={(event) => setNationalIdLast4(event.target.value.slice(0, 4))} inputMode="numeric" placeholder="1234" />
+                  </label>
+                  <label className="field">
+                    <span>{copy.fields.dob}</span>
+                    <input type="date" value={dateOfBirth} onChange={(event) => setDateOfBirth(event.target.value)} />
+                  </label>
+                  <label className="field">
+                    <span>{copy.fields.sex}</span>
+                    <select value={sex} onChange={(event) => setSex(event.target.value)}>
+                      <option value="female">{copy.sex.female}</option>
+                      <option value="male">{copy.sex.male}</option>
+                      <option value="unknown">{copy.sex.unknown}</option>
+                    </select>
+                  </label>
+                </div>
+                <div className="booking-actions-row">
+                  <button className="secondary-action patient-step-action" onClick={() => setCurrentStep(0)} type="button">
+                    {copy.backButton}
+                  </button>
+                  <button className="primary-action patient-step-action" onClick={moveToReviewStep} type="button">
+                    {copy.reviewButton}
+                  </button>
+                </div>
+              </section>
+            ) : null}
+
+            {currentStep === 2 ? (
+              <section className="booking-section booking-step-card">
+                <div className="booking-section-heading">
+                  <span>3</span>
+                  <div>
+                    <h3>{copy.reviewTitle}</h3>
+                    <p>{copy.reviewText}</p>
+                  </div>
+                </div>
+                <div className="booking-review-grid">
+                  <aside className="booking-summary" aria-label={copy.summaryAria}>
+                    <div className="summary-total compact-summary-note">
+                      <span>{copy.depositLabel}</span>
+                      <strong>{copy.depositText}</strong>
+                    </div>
+                    <dl>
+                      <div>
+                        <dt>{copy.branch}</dt>
+                        <dd>{branch}</dd>
+                      </div>
+                      <div>
+                        <dt>{copy.hotline}</dt>
+                        <dd>{branchInfo.hotline}</dd>
+                      </div>
+                      <div>
+                        <dt>{copy.service}</dt>
+                        <dd>{service}</dd>
+                      </div>
+                      <div>
+                        <dt>{copy.selectedSlot}</dt>
+                        <dd>{appointmentDate} / {appointmentTime}</dd>
+                      </div>
+                      <div>
+                        <dt>{copy.fields.fullName}</dt>
+                        <dd>{fullName}</dd>
+                      </div>
+                      <div>
+                        <dt>{copy.fields.phone}</dt>
+                        <dd>{phone}</dd>
+                      </div>
+                      <div>
+                        <dt>{copy.fields.visitReason}</dt>
+                        <dd>{visitReason || "-"}</dd>
+                      </div>
+                    </dl>
+                  </aside>
+
+                  <div className="booking-review-panel">
+                    <div className="next-steps-list" aria-label={copy.paymentAria}>
+                      {Object.values(copy.depositMethods).map((item) => (
+                        <div className="next-step-item" key={item}>
+                          <ShieldCheck size={18} aria-hidden="true" />
+                          <span>{item}</span>
+                        </div>
+                      ))}
+                    </div>
+                    <label className="checkbox-field">
+                      <input checked={hasConsent} onChange={(event) => setHasConsent(event.target.checked)} type="checkbox" />
+                      <span>{copy.consent}</span>
+                    </label>
+                    <div className="booking-actions-row">
+                      <button className="secondary-action patient-step-action" onClick={() => setCurrentStep(1)} type="button">
+                        {copy.backButton}
+                      </button>
+                      <button className="primary-action patient-submit" type="submit">
+                        <ShieldCheck size={18} aria-hidden="true" />
+                        {copy.submit}
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </section>
+            ) : null}
+          </div>
         </div>
       </form>
     </div>

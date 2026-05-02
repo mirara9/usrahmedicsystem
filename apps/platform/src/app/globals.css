@@ -1200,29 +1200,45 @@ html[lang="zh-Hans"] .patient-hero h1 {
   line-height: 1.55;
 }
 
-.booking-progress {
+.booking-stepper {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 8px;
+  gap: 10px;
 }
 
-.booking-progress span {
-  min-height: 34px;
+.booking-stepper button {
+  min-height: 58px;
   border: 1px solid #eadde3;
-  border-radius: 999px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
+  border-radius: 16px;
+  display: grid;
+  justify-items: start;
+  gap: 2px;
+  padding: 12px 14px;
   color: #65747b;
   background: #fff;
-  font-size: 0.86rem;
-  font-weight: 800;
+  text-align: left;
+  cursor: pointer;
 }
 
-.booking-progress span.active {
+.booking-stepper button strong {
+  color: #20282c;
+  font-size: 0.86rem;
+}
+
+.booking-stepper button span {
+  font-size: 0.95rem;
+  font-weight: 700;
+}
+
+.booking-stepper button.active {
   border-color: rgba(236, 19, 127, 0.26);
   background: #fff1f8;
   color: var(--brand-pink-dark);
+}
+
+.booking-stepper button.complete {
+  border-color: rgba(49, 198, 197, 0.26);
+  background: #f2fcfb;
 }
 
 .profile-strip {
@@ -1261,6 +1277,51 @@ html[lang="zh-Hans"] .patient-hero h1 {
 .booking-main {
   display: grid;
   gap: 16px;
+}
+
+.booking-step-card {
+  gap: 20px;
+}
+
+.booking-inline-note {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  border-top: 1px solid #efe2e8;
+  padding-top: 18px;
+}
+
+.booking-inline-note strong {
+  display: block;
+  color: #20282c;
+}
+
+.booking-inline-note p {
+  margin: 4px 0 0;
+  color: #64737a;
+}
+
+.booking-review-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
+  gap: 18px;
+}
+
+.booking-review-panel {
+  display: grid;
+  gap: 18px;
+}
+
+.booking-actions-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.patient-step-action {
+  min-height: 48px;
+  padding-inline: 18px;
 }
 
 .booking-section {
@@ -1450,8 +1511,8 @@ html[lang="zh-Hans"] .patient-hero h1 {
 
 .patient-submit {
   min-height: 52px;
-  width: 100%;
-  padding: 8px 12px;
+  width: auto;
+  padding: 8px 18px;
   font-weight: 800;
   line-height: 1.2;
   text-align: center;
@@ -1651,7 +1712,8 @@ html[lang="zh-Hans"] .patient-hero h1 {
   .patient-hero,
   .branch-band,
   .booking-layout,
-  .booking-steps {
+  .booking-steps,
+  .booking-review-grid {
     grid-template-columns: 1fr;
   }
 
@@ -1689,6 +1751,12 @@ html[lang="zh-Hans"] .patient-hero h1 {
 
   .deposit-options {
     grid-template-columns: 1fr;
+  }
+
+  .booking-inline-note,
+  .booking-actions-row {
+    flex-direction: column;
+    align-items: stretch;
   }
 }
 
